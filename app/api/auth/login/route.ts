@@ -1,12 +1,13 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { loginSchemaDef } from "@/features/auth/schema";
 import { loginRequest } from "@/features/auth/services/login";
-import { 
-  ACCESS_COOKIE_NAME, 
+import {
+  ACCESS_COOKIE_NAME,
   REFRESH_COOKIE_NAME,
   ACCESS_COOKIE_MAX_AGE,
-  REFRESH_COOKIE_MAX_AGE 
+  REFRESH_COOKIE_MAX_AGE,
 } from "@/constants/auth";
 import { ApiError } from "@/lib/api/client";
 
@@ -19,14 +20,14 @@ export async function POST(req: Request) {
 
     if (!parsed.success) {
       return NextResponse.json(
-        { error: "Ongeldige inloggegevens" }, 
-        { status: 400 }
+        { error: "Ongeldige inloggegevens" },
+        { status: 400 },
       );
     }
 
     const tokens = await loginRequest(parsed.data);
     const cookieStore = await cookies();
-    
+
     cookieStore.set(ACCESS_COOKIE_NAME, tokens.access, {
       httpOnly: true,
       secure: IS_PROD,
@@ -48,14 +49,11 @@ export async function POST(req: Request) {
     if (err instanceof ApiError) {
       return NextResponse.json(
         { error: err.message },
-        { status: err.statusCode }
+        { status: err.statusCode },
       );
     }
 
     const error = err instanceof Error ? err : new Error("Inloggen mislukt");
-    return NextResponse.json(
-      { error: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
