@@ -1,0 +1,396 @@
+@import "tailwindcss";
+
+/* Custom THEME VARIABLES AND BASE STYLES */
+.theme-promax {
+  --primary: oklch(0.7105 0.1697 54.29);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(42% 0.15 30);
+}
+
+@media (prefers-color-scheme: dark) {
+  .theme-promax {
+    --primary: oklch(0.7105 0.1697 54.29);
+    --primary-foreground: oklch(1 0 0);
+    --secondary: oklch(55% 0.15 30);
+  }
+}
+
+/* ============================================
+   CSS RESET
+   ============================================ */
+
+/* Box sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default margin and padding */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* Improve media defaults */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Remove built-in form typography styles */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* Avoid text overflows */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+/* Remove list styles */
+ul,
+ol {
+  list-style: none;
+}
+
+/* Remove button styles */
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Remove link styles */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Improve line heights */
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Create a root stacking context */
+#root,
+#__next {
+  isolation: isolate;
+}
+
+/* ============================================
+   THEME BASE - LIGHT MODE
+   ============================================ */
+
+:root {
+  /* Background & Foreground */
+  --background: #ffffff;
+  --foreground: #171717;
+
+  /* Card */
+  --card: #ffffff;
+  --card-foreground: #171717;
+
+  /* Primary - Tu color principal de marca */
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+
+  /* Secondary */
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+
+  /* Muted */
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+
+  /* Accent */
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+
+  /* Success */
+  --success: #10b981;
+  --success-foreground: #ffffff;
+  --success-soft: #d1fae5;
+  --success-border: #6ee7b7;
+
+  /* Warning */
+  --warning: #f59e0b;
+  --warning-foreground: #ffffff;
+  --warning-soft: #fef3c7;
+  --warning-border: #fcd34d;
+
+  /* Error/Destructive */
+  --error: #ef4444;
+  --error-foreground: #ffffff;
+  --error-soft: #fee2e2;
+  --error-border: #fca5a5;
+
+  /* Info */
+  --info: #3b82f6;
+  --info-foreground: #ffffff;
+  --info-soft: #dbeafe;
+  --info-border: #93c5fd;
+
+  /* Border & Input */
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #2563eb;
+
+  /* Radius */
+  --radius: 0.5rem;
+}
+
+/* ============================================
+   THEME BASE - DARK MODE
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Background & Foreground */
+    --background: #0a0a0a;
+    --foreground: #ededed;
+
+    /* Card */
+    --card: #171717;
+    --card-foreground: #ededed;
+
+    /* Primary */
+    --primary: #3b82f6;
+    --primary-foreground: #ffffff;
+
+    /* Secondary */
+    --secondary: #27272a;
+    --secondary-foreground: #fafafa;
+
+    /* Muted */
+    --muted: #27272a;
+    --muted-foreground: #a1a1aa;
+
+    /* Accent */
+    --accent: #27272a;
+    --accent-foreground: #fafafa;
+
+    /* Success */
+    --success: #10b981;
+    --success-foreground: #ffffff;
+    --success-soft: #064e3b;
+    --success-border: #047857;
+
+    /* Warning */
+    --warning: #f59e0b;
+    --warning-foreground: #ffffff;
+    --warning-soft: #78350f;
+    --warning-border: #b45309;
+
+    /* Error/Destructive */
+    --error: #ef4444;
+    --error-foreground: #ffffff;
+    --error-soft: #7f1d1d;
+    --error-border: #b91c1c;
+
+    /* Info */
+    --info: #3b82f6;
+    --info-foreground: #ffffff;
+    --info-soft: #1e3a8a;
+    --info-border: #1d4ed8;
+
+    /* Border & Input */
+    --border: #27272a;
+    --input: #27272a;
+    --ring: #3b82f6;
+  }
+}
+
+/* ============================================
+   TAILWIND THEME INLINE
+   ============================================ */
+
+@theme inline {
+  /* Fonts */
+  --font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+
+  /* Color tokens */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-soft: var(--success-soft);
+  --color-success-border: var(--success-border);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-border: var(--warning-border);
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --color-error-soft: var(--error-soft);
+  --color-error-border: var(--error-border);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-info-soft: var(--info-soft);
+  --color-info-border: var(--info-border);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Radius */
+  --radius-sm: calc(var(--radius) - 0.25rem);
+  --radius-md: calc(var(--radius) - 0.125rem);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 0.25rem);
+}
+
+/* ============================================
+   BODY STYLES
+   ============================================ */
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-feature-settings:
+    "rlig" 1,
+    "calt" 1;
+}
+
+/* ============================================
+   CUSTOM SCROLLBAR
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+  border-radius: var(--radius);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  border-radius: var(--radius);
+  border: 2px solid var(--background);
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--foreground);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--muted-foreground) var(--background);
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+}
+
+@layer utilities {
+  /* Success variants */
+  .bg-success {
+    background-color: var(--success);
+    color: var(--success-foreground);
+  }
+
+  .bg-success-soft {
+    background-color: var(--success-soft);
+  }
+
+  .border-success {
+    border-color: var(--success);
+  }
+
+  .text-success {
+    color: var(--success);
+  }
+
+  /* Warning variants */
+  .bg-warning {
+    background-color: var(--warning);
+    color: var(--warning-foreground);
+  }
+
+  .bg-warning-soft {
+    background-color: var(--warning-soft);
+  }
+
+  .border-warning {
+    border-color: var(--warning);
+  }
+
+  .text-warning {
+    color: var(--warning);
+  }
+
+  /* Error variants */
+  .bg-error {
+    background-color: var(--error);
+    color: var(--error-foreground);
+  }
+
+  .bg-error-soft {
+    background-color: var(--error-soft);
+  }
+
+  .border-error {
+    border-color: var(--error);
+  }
+
+  .text-error {
+    color: var(--error);
+  }
+
+  /* Info variants */
+  .bg-info {
+    background-color: var(--info);
+    color: var(--info-foreground);
+  }
+
+  .bg-info-soft {
+    background-color: var(--info-soft);
+  }
+
+  .border-info {
+    border-color: var(--info);
+  }
+
+  .text-info {
+    color: var(--info);
+  }
+}
