@@ -1,4 +1,4 @@
-export const PUBLIC_PATHS = ["/login", "/reset-password"];
+export const PROTECTED_ROUTE_PREFIXES = ["/dashboard"];
 
 export const STATIC_PATH_PREFIXES = [
   "/_next",

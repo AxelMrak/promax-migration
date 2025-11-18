@@ -1,13 +1,13 @@
 import {
   STATIC_PATH_NAMES,
   STATIC_PATH_PREFIXES,
-  PUBLIC_PATHS,
+  PROTECTED_ROUTE_PREFIXES,
 } from "@/lib/proxy/paths";
 
-export const isPublicPath = (pathname: string): boolean =>
-  PUBLIC_PATHS.some(
-    (publicPath) =>
-      pathname === publicPath || pathname.startsWith(`${publicPath}/`),
+export const isProtectedPath = (pathname: string): boolean =>
+  PROTECTED_ROUTE_PREFIXES.some(
+    (prefix) =>
+      pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
 
 export const isAssetPath = (pathname: string): boolean => {
