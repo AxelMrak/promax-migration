@@ -1,10 +1,11 @@
 import { z } from "zod";
 
 export const loginSchemaDef = z.object({
-  username: z.string("Username or Email is required").min(2).max(100),
+  username: z.string().nonempty("Username or email is required"),
   password: z
-    .string("Password is required")
-    .min(6, "Password must be at least 6 characters"),
+    .string()
+    .min(8, "Password must be at least 8 characters long")
+    .nonempty("Password is required"),
 });
 
 export type LoginSchema = z.infer<typeof loginSchemaDef>;

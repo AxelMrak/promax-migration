@@ -4,6 +4,7 @@ import { api } from "@/lib/api/client";
 import { AuthTokens } from "@/features/auth/types";
 
 export async function loginRequest(data: LoginSchema) {
+  console.debug("loginRequest", data);
   return api<AuthTokens>("/auth/token/", {
     method: "POST",
     body: {

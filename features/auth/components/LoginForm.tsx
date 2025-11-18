@@ -1,44 +1,53 @@
 "use client";
-
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import type { LoginSchema } from "@/features/auth/schema";
 import { loginSchemaDef } from "@/features/auth/schema";
-import { loginAction } from "@/features/auth/actions";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 
-export function LoginForm() {
-  const router = useRouter();
+type LoginFormProps = {
+  onSuccess?: () => void;
+};
+
+export function LoginForm({ onSuccess }: LoginFormProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isValid },
   } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchemaDef),
-    mode: "onBlur",
+    mode: "onChange",
   });
 
   const onSubmit = async (values: LoginSchema) => {
-    const formData = new FormData();
-    formData.append("username", values.username);
-    formData.append("password", values.password);
+    const loginPromise = fetch("/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    }).then(async (response) => {
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Inloggen mislukt");
+      }
+
+      return data;
+    });
 
     try {
-      await toast.promise(loginAction(formData), {
+      await toast.promise(loginPromise, {
         loading: "Bezig met inloggen...",
         success: "Succesvol ingelogd",
-        error: (error) =>
-          error instanceof Error ? error.message : "Inloggen mislukt",
+        error: (err) =>
+          err instanceof Error ? err.message : "Inloggen mislukt",
       });
-      router.replace("/dashboard");
-      router.refresh();
-    } catch (error) {
-      console.error("Login failed", error);
-    }
+
+      onSuccess?.();
+    } catch {}
   };
 
   return (
@@ -50,7 +59,6 @@ export function LoginForm() {
         {...register("username")}
         error={errors.username?.message}
       />
-
       <Input
         type="password"
         label="Wachtwoord"
@@ -59,7 +67,12 @@ export function LoginForm() {
         {...register("password")}
         error={errors.password?.message}
       />
-      <Button type="submit" className="w-full" isLoading={isSubmitting}>
+      <Button
+        type="submit"
+        className="w-full"
+        isLoading={isSubmitting}
+        disabled={isSubmitting || !isValid}
+      >
         Inloggen
       </Button>
     </form>

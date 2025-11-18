@@ -67,9 +67,13 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <p className="text-xs text-muted-foreground">{note}</p>
         )}
 
-        {error && (
-          <p className="text-xs font-medium text-destructive">{error}</p>
-        )}
+        <div className="min-h-4">
+          {error ? (
+            <p className="text-xs font-medium text-destructive">{error}</p>
+          ) : (
+            <p className="text-xs opacity-0"> </p>
+          )}
+        </div>
       </div>
     );
   },

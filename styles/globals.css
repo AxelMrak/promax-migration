@@ -370,3 +370,47 @@ body {
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(55% 0.15 30);
 }
+
+@supports (view-transition-name: none) {
+  .theme-switcher-button {
+    view-transition-name: theme-switcher-surface;
+  }
+
+  .theme-switcher-icon {
+    view-transition-name: theme-switcher-icon;
+  }
+
+  ::view-transition-old(theme-switcher-surface),
+  ::view-transition-new(theme-switcher-surface) {
+    animation: theme-switcher-surface-scale 0.35s ease;
+  }
+
+  ::view-transition-old(theme-switcher-icon),
+  ::view-transition-new(theme-switcher-icon) {
+    animation: theme-switcher-icon-fade 0.35s ease;
+  }
+}
+
+@keyframes theme-switcher-icon-fade {
+  from {
+    opacity: 0;
+    transform: rotate(-10deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes theme-switcher-surface-scale {
+  from {
+    opacity: 0.9;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

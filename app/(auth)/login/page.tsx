@@ -2,10 +2,11 @@ import Image from "next/image";
 
 import { LoginForm } from "@/features/auth/components/LoginForm";
 import { Card } from "@/components/ui/Card";
+import { AuthPanel } from "@/features/auth/views/AuthPanel";
 
-export default function Login() {
+export default function AuthPage() {
   return (
-    <div className="relative flex min-h-lvh flex-col items-center justify-center">
+    <main className="relative flex min-h-lvh flex-col items-center justify-center">
       <Image
         src="/images/promax/login.webp"
         alt="Achtergrond voor login"
@@ -14,9 +15,7 @@ export default function Login() {
         className="-z-10 object-cover dark:brightness-75"
         priority
       />
-      <Card className="w-full max-w-xs space-y-8 border-border/30 bg-background/90 backdrop-blur-xs md:max-w-md">
-        <LoginForm />
-      </Card>
-    </div>
+      <AuthPanel />
+    </main>
   );
 }
