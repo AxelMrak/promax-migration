@@ -1,33 +1,45 @@
 "use client";
 
-import * as React from "react";
 import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 
-import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/ui";
+
+const OPTIONS = [
+  { value: "light", label: "Light", Icon: Sun },
+  { value: "dark", label: "Dark", Icon: Moon },
+] as const;
 
 export function ThemeSwitcher() {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => setMounted(true), []);
-
-  if (!mounted) return null;
-
-  const handleChangeTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light");
-  };
+  const { resolvedTheme, setTheme } = useTheme();
+  const activeTheme = (resolvedTheme ?? "light") as "light" | "dark";
 
   return (
-    <Button
-      variant="ghost"
-      size="sm"
-      aria-label="Change Theme"
-      onClick={handleChangeTheme}
-      className="fixed bottom-2 right-2 rounded-full border border-border/50 bg-background transition-all hover:scale-[1.02] md:bottom-4 md:right-4"
-    >
-      <Sun className="size-5 dark:hidden" />
-      <Moon className="hidden size-5 dark:block" />
-    </Button>
+    <div className="fixed bottom-4 right-4 z-50">
+      <div className="flex items-center gap-1 rounded-full border border-border/60 bg-card/90 p-1 shadow-lg backdrop-blur">
+        {OPTIONS.map(({ value, label, Icon }) => {
+          const isActive = activeTheme === value;
+
+          return (
+            <button
+              key={value}
+              type="button"
+              aria-pressed={isActive}
+              aria-label={`Activate ${label.toLowerCase()} theme`}
+              onClick={() => setTheme(value)}
+              className={cn(
+                "flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                isActive
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              <Icon className="size-4" />
+              <span className="hidden md:inline">{label}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 }
