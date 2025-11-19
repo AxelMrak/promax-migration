@@ -1,14 +1,6 @@
 import { BASE_API_URL } from "@/constants/env";
-
-type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-
-type RequestOptions = {
-  method?: HttpMethod;
-  body?: unknown;
-  headers?: Record<string, string>;
-  cache?: RequestCache;
-  next?: NextFetchRequestConfig;
-};
+import { getCookie } from "@/lib/cookies";
+import type { RequestOptions } from "@/lib/api/types";
 
 export class ApiError extends Error {
   constructor(
@@ -63,4 +55,19 @@ export async function api<T = unknown>(
 
   if (res.status === 204) return {} as T;
   return res.json();
+}
+
+export async function authApi<T = unknown>(
+  path: string,
+  options: RequestOptions = {},
+): Promise<T> {
+  const accessToken = getCookie("access_token");
+
+  return api<T>(path, {
+    ...options,
+    headers: {
+      ...options.headers,
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
 }

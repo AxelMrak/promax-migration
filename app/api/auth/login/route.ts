@@ -1,6 +1,4 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
 import { loginSchemaDef } from "@/features/auth/schema";
 import { loginRequest } from "@/features/auth/services/login";
 import {
@@ -10,8 +8,8 @@ import {
   REFRESH_COOKIE_MAX_AGE,
 } from "@/constants/auth";
 import { ApiError } from "@/lib/api/client";
-
-const IS_PROD = process.env.NODE_ENV === "production";
+import { IS_PROD } from "@/constants/env";
+import { setCookie } from "@/lib/cookies";
 
 export async function POST(req: Request) {
   try {
@@ -26,20 +24,17 @@ export async function POST(req: Request) {
     }
 
     const tokens = await loginRequest(parsed.data);
-    const cookieStore = await cookies();
 
-    cookieStore.set(ACCESS_COOKIE_NAME, tokens.access, {
+    await setCookie(ACCESS_COOKIE_NAME, tokens.access, {
       httpOnly: true,
       secure: IS_PROD,
-      path: "/",
       sameSite: "lax",
       maxAge: ACCESS_COOKIE_MAX_AGE,
     });
 
-    cookieStore.set(REFRESH_COOKIE_NAME, tokens.refresh, {
+    await setCookie(REFRESH_COOKIE_NAME, tokens.refresh, {
       httpOnly: true,
       secure: IS_PROD,
-      path: "/",
       sameSite: "lax",
       maxAge: REFRESH_COOKIE_MAX_AGE,
     });

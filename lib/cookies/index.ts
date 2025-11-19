@@ -1,36 +1,31 @@
 import "server-only";
+
 import { cookies } from "next/headers";
+import type { setCookieOptions } from "@/lib/cookies/types";
+import { IS_PROD } from "@/constants/env";
 
-const IS_PROD = process.env.NODE_ENV === "production";
-
-export function getCookie(name: string): string | undefined {
-  return cookies().get(name)?.value;
+export async function getCookie(name: string): Promise<string | undefined> {
+  const cookieStore = await cookies();
+  const cookie = cookieStore.get(name);
+  return cookie?.value;
 }
 
-export function setCookie(
+export async function setCookie(
   name: string,
   value: string,
-  options?: Partial<{
-    expires: Date;
-    maxAge: number;
-    domain: string;
-    path: string;
-    secure: boolean;
-    httpOnly: boolean;
-    sameSite: "strict" | "lax" | "none";
-  }>,
-): void {
-  cookies().set({
-    name,
-    value,
-    httpOnly: true,
-    secure: IS_PROD,
-    sameSite: "lax",
-    path: "/",
-    ...options,
+  options: setCookieOptions = {},
+): Promise<void> {
+  const cookieStore = await cookies();
+  cookieStore.set(name, value, {
+    httpOnly: options.httpOnly ?? true,
+    secure: options.secure ?? IS_PROD,
+    sameSite: options.sameSite ?? "lax",
+    maxAge: options.maxAge,
+    path: options.path ?? "/",
   });
 }
 
-export function deleteCookie(name: string): void {
-  cookies().delete(name);
+export async function deleteCookie(name: string): Promise<void> {
+  const cookieStore = await cookies();
+  cookieStore.delete(name);
 }

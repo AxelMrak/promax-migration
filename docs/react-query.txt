@@ -1,0 +1,747 @@
+Overview
+
+Copy Markdown
+
+TanStack Query (formerly known as React Query) is often described as the missing data-fetching library for web applications, but in more technical terms, it makes fetching, caching, synchronizing and updating server state in your web applications a breeze.
+
+Motivation
+Most core web frameworks do not come with an opinionated way of fetching or updating data in a holistic way. Because of this developers end up building either meta-frameworks which encapsulate strict opinions about data-fetching, or they invent their own ways of fetching data. This usually means cobbling together component-based state and side-effects, or using more general purpose state management libraries to store and provide asynchronous data throughout their apps.
+
+While most traditional state management libraries are great for working with client state, they are not so great at working with async or server state. This is because server state is totally different. For starters, server state:
+
+Is persisted remotely in a location you may not control or own
+Requires asynchronous APIs for fetching and updating
+Implies shared ownership and can be changed by other people without your knowledge
+Can potentially become "out of date" in your applications if you're not careful
+Once you grasp the nature of server state in your application, even more challenges will arise as you go, for example:
+
+Caching... (possibly the hardest thing to do in programming)
+Deduping multiple requests for the same data into a single request
+Updating "out of date" data in the background
+Knowing when data is "out of date"
+Reflecting updates to data as quickly as possible
+Performance optimizations like pagination and lazy loading data
+Managing memory and garbage collection of server state
+Memoizing query results with structural sharing
+If you're not overwhelmed by that list, then that must mean that you've probably solved all of your server state problems already and deserve an award. However, if you are like a vast majority of people, you either have yet to tackle all or most of these challenges and we're only scratching the surface!
+
+TanStack Query is hands down one of the best libraries for managing server state. It works amazingly well out-of-the-box, with zero-config, and can be customized to your liking as your application grows.
+
+TanStack Query allows you to defeat and overcome the tricky challenges and hurdles of server state and control your app data before it starts to control you.
+
+On a more technical note, TanStack Query will likely:
+
+Help you remove many lines of complicated and misunderstood code from your application and replace with just a handful of lines of TanStack Query logic
+Make your application more maintainable and easier to build new features without worrying about wiring up new server state data sources
+Have a direct impact on your end-users by making your application feel faster and more responsive than ever before
+Potentially help you save on bandwidth and increase memory performance
+Enough talk, show me some code already!
+In the example below, you can see TanStack Query in its most basic and simple form being used to fetch the GitHub stats for the TanStack Query GitHub project itself:
+
+Open in StackBlitz
+
+tsx
+
+import {
+QueryClient,
+QueryClientProvider,
+useQuery,
+} from '@tanstack/react-query'
+
+const queryClient = new QueryClient()
+
+export default function App() {
+return (
+<QueryClientProvider client={queryClient}>
+<Example />
+</QueryClientProvider>
+)
+}
+
+function Example() {
+const { isPending, error, data } = useQuery({
+queryKey: ['repoData'],
+queryFn: () =>
+fetch('https://api.github.com/repos/TanStack/query').then((res) =>
+res.json(),
+),
+})
+
+if (isPending) return 'Loading...'
+
+if (error) return 'An error has occurred: ' + error.message
+
+return (
+<div>
+<h1>{data.name}</h1>
+<p>{data.description}</p>
+<strong>👀 {data.subscribers_count}</strong>{' '}
+<strong>✨ {data.stargazers_count}</strong>{' '}
+<strong>🍴 {data.forks_count}</strong>
+</div>
+)
+}
+
+Quick Start
+
+Copy Markdown
+
+This code snippet very briefly illustrates the 3 core concepts of React Query:
+
+Queries
+Mutations
+Query Invalidation
+If you're looking for a fully functioning example, please have a look at our simple StackBlitz example
+
+tsx
+
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
+import { getTodos, postTodo } from '../my-api'
+
+// Create a client
+const queryClient = new QueryClient()
+
+function App() {
+  return (
+    // Provide the client to your App
+    <QueryClientProvider client={queryClient}>
+      <Todos />
+    </QueryClientProvider>
+  )
+}
+
+function Todos() {
+  // Access the client
+  const queryClient = useQueryClient()
+
+  // Queries
+  const query = useQuery({ queryKey: ['todos'], queryFn: getTodos })
+
+  // Mutations
+  const mutation = useMutation({
+    mutationFn: postTodo,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ['todos'] })
+    },
+  })
+
+  return (
+    <div>
+      <ul>
+        {query.data?.map((todo) => (
+          <li key={todo.id}>{todo.title}</li>
+        ))}
+      </ul>
+
+      <button
+        onClick={() => {
+          mutation.mutate({
+            id: Date.now(),
+            title: 'Do Laundry',
+          })
+        }}
+      >
+        Add Todo
+      </button>
+    </div>
+  )
+}
+
+render(<App />, document.getElementById('root'))
+These three concepts make up most of the core functionality of React Query. The next sections of the documentation will go over each of these core concepts in great detail. Query Basics
+A query is a declarative dependency on an asynchronous source of data that is tied to a unique key. A query can be used with any Promise based method (including GET and POST methods) to fetch data from a server. If your method modifies data on the server, we recommend using Mutations instead.
+
+To subscribe to a query in your components or custom hooks, call the useQuery hook with at least:
+
+A unique key for the query
+A function that returns a promise that:
+Resolves the data, or
+Throws an error
+tsx
+
+import { useQuery } from '@tanstack/react-query'
+
+function App() {
+  const info = useQuery({ queryKey: ['todos'], queryFn: fetchTodoList })
+}
+The unique key you provide is used internally for refetching, caching, and sharing your queries throughout your application.
+
+The query result returned by useQuery contains all of the information about the query that you'll need for templating and any other usage of the data:
+
+tsx
+
+const result = useQuery({ queryKey: ['todos'], queryFn: fetchTodoList })
+The result object contains a few very important states you'll need to be aware of to be productive. A query can only be in one of the following states at any given moment:
+
+isPending or status === 'pending' - The query has no data yet
+isError or status === 'error' - The query encountered an error
+isSuccess or status === 'success' - The query was successful and data is available
+Beyond those primary states, more information is available depending on the state of the query:
+
+error - If the query is in an isError state, the error is available via the error property.
+data - If the query is in an isSuccess state, the data is available via the data property.
+isFetching - In any state, if the query is fetching at any time (including background refetching) isFetching will be true.
+For most queries, it's usually sufficient to check for the isPending state, then the isError state, then finally, assume that the data is available and render the successful state:
+
+tsx
+
+function Todos() {
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: ['todos'],
+    queryFn: fetchTodoList,
+  })
+
+  if (isPending) {
+    return <span>Loading...</span>
+  }
+
+  if (isError) {
+    return <span>Error: {error.message}</span>
+  }
+
+  // We can assume by this point that `isSuccess === true`
+  return (
+    <ul>
+      {data.map((todo) => (
+        <li key={todo.id}>{todo.title}</li>
+      ))}
+    </ul>
+  )
+}
+If booleans aren't your thing, you can always use the status state as well:
+
+tsx
+
+function Todos() {
+  const { status, data, error } = useQuery({
+    queryKey: ['todos'],
+    queryFn: fetchTodoList,
+  })
+
+  if (status === 'pending') {
+    return <span>Loading...</span>
+  }
+
+  if (status === 'error') {
+    return <span>Error: {error.message}</span>
+  }
+
+  // also status === 'success', but "else" logic works, too
+  return (
+    <ul>
+      {data.map((todo) => (
+        <li key={todo.id}>{todo.title}</li>
+      ))}
+    </ul>
+  )
+}
+TypeScript will also narrow the type of data correctly if you've checked for pending and error before accessing it.
+
+FetchStatus
+In addition to the status field, you will also get an additional fetchStatus property with the following options:
+
+fetchStatus === 'fetching' - The query is currently fetching.
+fetchStatus === 'paused' - The query wanted to fetch, but it is paused. Read more about this in the Network Mode guide.
+fetchStatus === 'idle' - The query is not doing anything at the moment.
+Why two different states?
+Background refetches and stale-while-revalidate logic make all combinations for status and fetchStatus possible. For example:
+
+a query in success status will usually be in idle fetchStatus, but it could also be in fetching if a background refetch is happening.
+a query that mounts and has no data will usually be in pending status and fetching fetchStatus, but it could also be paused if there is no network connection.
+So keep in mind that a query can be in pending state without actually fetching data. As a rule of thumb:
+
+The status gives information about the data: Do we have any or not?
+The fetchStatus gives information about the queryFn: Is it running or not?
+Further Reading
+For an alternative way of performing status checks, have a look at this article by TkDodo.
+
+ Unlike queries, mutations are typically used to create/update/delete data or perform server side-effects. For this purpose, TanStack Query exports a useMutation hook.
+
+Here's an example of a mutation that adds a new todo to the server:
+
+tsx
+
+function App() {
+  const mutation = useMutation({
+    mutationFn: (newTodo) => {
+      return axios.post('/todos', newTodo)
+    },
+  })
+
+  return (
+    <div>
+      {mutation.isPending ? (
+        'Adding todo...'
+      ) : (
+        <>
+          {mutation.isError ? (
+            <div>An error occurred: {mutation.error.message}</div>
+          ) : null}
+
+          {mutation.isSuccess ? <div>Todo added!</div> : null}
+
+          <button
+            onClick={() => {
+              mutation.mutate({ id: new Date(), title: 'Do Laundry' })
+            }}
+          >
+            Create Todo
+          </button>
+        </>
+      )}
+    </div>
+  )
+}
+A mutation can only be in one of the following states at any given moment:
+
+isIdle or status === 'idle' - The mutation is currently idle or in a fresh/reset state
+isPending or status === 'pending' - The mutation is currently running
+isError or status === 'error' - The mutation encountered an error
+isSuccess or status === 'success' - The mutation was successful and mutation data is available
+Beyond those primary states, more information is available depending on the state of the mutation:
+
+error - If the mutation is in an error state, the error is available via the error property.
+data - If the mutation is in a success state, the data is available via the data property.
+In the example above, you also saw that you can pass variables to your mutations function by calling the mutate function with a single variable or object.
+
+Even with just variables, mutations aren't all that special, but when used with the onSuccess option, the Query Client's invalidateQueries method and the Query Client's setQueryData method, mutations become a very powerful tool.
+
+IMPORTANT: The mutate function is an asynchronous function, which means you cannot use it directly in an event callback in React 16 and earlier. If you need to access the event in onSubmit you need to wrap mutate in another function. This is due to React event pooling.
+
+tsx
+
+// This will not work in React 16 and earlier
+const CreateTodo = () => {
+  const mutation = useMutation({
+    mutationFn: (event) => {
+      event.preventDefault()
+      return fetch('/api', new FormData(event.target))
+    },
+  })
+
+  return <form onSubmit={mutation.mutate}>...</form>
+}
+
+// This will work
+const CreateTodo = () => {
+  const mutation = useMutation({
+    mutationFn: (formData) => {
+      return fetch('/api', formData)
+    },
+  })
+  const onSubmit = (event) => {
+    event.preventDefault()
+    mutation.mutate(new FormData(event.target))
+  }
+
+  return <form onSubmit={onSubmit}>...</form>
+}
+Resetting Mutation State
+It's sometimes the case that you need to clear the error or data of a mutation request. To do this, you can use the reset function to handle this:
+
+tsx
+
+const CreateTodo = () => {
+  const [title, setTitle] = useState('')
+  const mutation = useMutation({ mutationFn: createTodo })
+
+  const onCreateTodo = (e) => {
+    e.preventDefault()
+    mutation.mutate({ title })
+  }
+
+  return (
+    <form onSubmit={onCreateTodo}>
+      {mutation.error && (
+        <h5 onClick={() => mutation.reset()}>{mutation.error}</h5>
+      )}
+      <input
+        type="text"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
+      <br />
+      <button type="submit">Create Todo</button>
+    </form>
+  )
+}
+Mutation Side Effects
+useMutation comes with some helper options that allow quick and easy side-effects at any stage during the mutation lifecycle. These come in handy for both invalidating and refetching queries after mutations and even optimistic updates
+
+tsx
+
+useMutation({
+  mutationFn: addTodo,
+  onMutate: (variables, context) => {
+    // A mutation is about to happen!
+
+    // Optionally return a result containing data to use when for example rolling back
+    return { id: 1 }
+  },
+  onError: (error, variables, onMutateResult, context) => {
+    // An error happened!
+    console.log(`rolling back optimistic update with id ${onMutateResult.id}`)
+  },
+  onSuccess: (data, variables, onMutateResult, context) => {
+    // Boom baby!
+  },
+  onSettled: (data, error, variables, onMutateResult, context) => {
+    // Error or success... doesn't matter!
+  },
+})
+When returning a promise in any of the callback functions it will first be awaited before the next callback is called:
+
+tsx
+
+useMutation({
+  mutationFn: addTodo,
+  onSuccess: async () => {
+    console.log("I'm first!")
+  },
+  onSettled: async () => {
+    console.log("I'm second!")
+  },
+})
+You might find that you want to trigger additional callbacks beyond the ones defined on useMutation when calling mutate. This can be used to trigger component-specific side effects. To do that, you can provide any of the same callback options to the mutate function after your mutation variable. Supported options include: onSuccess, onError and onSettled. Please keep in mind that those additional callbacks won't run if your component unmounts before the mutation finishes.
+
+tsx
+
+useMutation({
+  mutationFn: addTodo,
+  onSuccess: (data, variables, onMutateResult, context) => {
+    // I will fire first
+  },
+  onError: (error, variables, onMutateResult, context) => {
+    // I will fire first
+  },
+  onSettled: (data, error, variables, onMutateResult, context) => {
+    // I will fire first
+  },
+})
+
+mutate(todo, {
+  onSuccess: (data, variables, onMutateResult, context) => {
+    // I will fire second!
+  },
+  onError: (error, variables, onMutateResult, context) => {
+    // I will fire second!
+  },
+  onSettled: (data, error, variables, onMutateResult, context) => {
+    // I will fire second!
+  },
+})
+Consecutive mutations
+There is a slight difference in handling onSuccess, onError and onSettled callbacks when it comes to consecutive mutations. When passed to the mutate function, they will be fired up only once and only if the component is still mounted. This is due to the fact that mutation observer is removed and resubscribed every time when the mutate function is called. On the contrary, useMutation handlers execute for each mutate call.
+
+Be aware that most likely, mutationFn passed to useMutation is asynchronous. In that case, the order in which mutations are fulfilled may differ from the order of mutate function calls.
+
+tsx
+
+useMutation({
+  mutationFn: addTodo,
+  onSuccess: (data, variables, onMutateResult, context) => {
+    // Will be called 3 times
+  },
+})
+
+const todos = ['Todo 1', 'Todo 2', 'Todo 3']
+todos.forEach((todo) => {
+  mutate(todo, {
+    onSuccess: (data, variables, onMutateResult, context) => {
+      // Will execute only once, for the last mutation (Todo 3),
+      // regardless which mutation resolves first
+    },
+  })
+})
+Promises
+Use mutateAsync instead of mutate to get a promise which will resolve on success or throw on an error. This can for example be used to compose side effects.
+
+tsx
+
+const mutation = useMutation({ mutationFn: addTodo })
+
+try {
+  const todo = await mutation.mutateAsync(todo)
+  console.log(todo)
+} catch (error) {
+  console.error(error)
+} finally {
+  console.log('done')
+}
+Retry
+By default, TanStack Query will not retry a mutation on error, but it is possible with the retry option:
+
+tsx
+
+const mutation = useMutation({
+  mutationFn: addTodo,
+  retry: 3,
+})
+If mutations fail because the device is offline, they will be retried in the same order when the device reconnects.
+
+Persist mutations
+Mutations can be persisted to storage if needed and resumed at a later point. This can be done with the hydration functions:
+
+tsx
+
+const queryClient = new QueryClient()
+
+// Define the "addTodo" mutation
+queryClient.setMutationDefaults(['addTodo'], {
+  mutationFn: addTodo,
+  onMutate: async (variables, context) => {
+    // Cancel current queries for the todos list
+    await context.client.cancelQueries({ queryKey: ['todos'] })
+
+    // Create optimistic todo
+    const optimisticTodo = { id: uuid(), title: variables.title }
+
+    // Add optimistic todo to todos list
+    context.client.setQueryData(['todos'], (old) => [...old, optimisticTodo])
+
+    // Return a result with the optimistic todo
+    return { optimisticTodo }
+  },
+  onSuccess: (result, variables, onMutateResult, context) => {
+    // Replace optimistic todo in the todos list with the result
+    context.client.setQueryData(['todos'], (old) =>
+      old.map((todo) =>
+        todo.id === onMutateResult.optimisticTodo.id ? result : todo,
+      ),
+    )
+  },
+  onError: (error, variables, onMutateResult, context) => {
+    // Remove optimistic todo from the todos list
+    context.client.setQueryData(['todos'], (old) =>
+      old.filter((todo) => todo.id !== onMutateResult.optimisticTodo.id),
+    )
+  },
+  retry: 3,
+})
+
+// Start mutation in some component:
+const mutation = useMutation({ mutationKey: ['addTodo'] })
+mutation.mutate({ title: 'title' })
+
+// If the mutation has been paused because the device is for example offline,
+// Then the paused mutation can be dehydrated when the application quits:
+const state = dehydrate(queryClient)
+
+// The mutation can then be hydrated again when the application is started:
+hydrate(queryClient, state)
+
+// Resume the paused mutations:
+queryClient.resumePausedMutations()
+Persisting Offline mutations
+If you persist offline mutations with the persistQueryClient plugin, mutations cannot be resumed when the page is reloaded unless you provide a default mutation function.
+
+This is a technical limitation. When persisting to an external storage, only the state of mutations is persisted, as functions cannot be serialized. After hydration, the component that triggers the mutation might not be mounted, so calling resumePausedMutations might yield an error: No mutationFn found.
+
+tsx
+
+const persister = createSyncStoragePersister({
+  storage: window.localStorage,
+})
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      gcTime: 1000 * 60 * 60 * 24, // 24 hours
+    },
+  },
+})
+
+// we need a default mutation function so that paused mutations can resume after a page reload
+queryClient.setMutationDefaults(['todos'], {
+  mutationFn: ({ id, data }) => {
+    return api.updateTodo(id, data)
+  },
+})
+
+export default function App() {
+  return (
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{ persister }}
+      onSuccess={() => {
+        // resume mutations after initial restore from localStorage was successful
+        queryClient.resumePausedMutations()
+      }}
+    >
+      <RestOfTheApp />
+    </PersistQueryClientProvider>
+  )
+}
+We also have an extensive offline example that covers both queries and mutations.
+
+Mutation Scopes
+Per default, all mutations run in parallel - even if you invoke .mutate() of the same mutation multiple times. Mutations can be given a scope with an id to avoid that. All mutations with the same scope.id will run in serial, which means when they are triggered, they will start in isPaused: true state if there is already a mutation for that scope in progress. They will be put into a queue and will automatically resume once their time in the queue has come.
+
+tsx
+
+const mutation = useMutation({
+  mutationFn: addTodo,
+  scope: {
+    id: 'todo',
+  }, })
+
+import React from 'react'
+import { QueryClient, dehydrate } from '@tanstack/react-query'
+import { Header, InfoBox, Layout, PostList } from '../components'
+import { fetchPosts } from '../hooks/usePosts'
+
+const Home = () => {
+  return (
+    <Layout>
+      <Header />
+      <InfoBox>ℹ️ This page shows how to use SSG with React-Query.</InfoBox>
+      <PostList />
+    </Layout>
+  )
+}
+
+export async function getStaticProps() {
+  const queryClient = new QueryClient()
+
+  await queryClient.prefetchQuery({
+    queryKey: ['posts', 10],
+    queryFn: () => fetchPosts(10),
+  })
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  }
+}
+
+export default Home
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+tsx
+
+import React from 'react'
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
+import { pokemonOptions } from '@/app/pokemon'
+import { getQueryClient } from '@/app/get-query-client'
+import { PokemonInfo } from './pokemon-info'
+
+export default function Home() {
+  const queryClient = getQueryClient()
+
+  void queryClient.prefetchQuery(pokemonOptions)
+
+  return (
+    <main>
+      <h1>Pokemon Info</h1>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <PokemonInfo />
+      </HydrationBoundary>
+    </main>
+  )
+} 'use client'
+import { isServer, useSuspenseQuery } from '@tanstack/react-query'
+import { Suspense } from 'react'
+
+export const runtime = 'edge' // 'nodejs' (default) | 'edge'
+
+function getBaseURL() {
+  if (!isServer) {
+    return ''
+  }
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`
+  }
+  return 'http://localhost:3000'
+}
+const baseUrl = getBaseURL()
+function useWaitQuery(props: { wait: number }) {
+  const query = useSuspenseQuery({
+    queryKey: ['wait', props.wait],
+    queryFn: async () => {
+      const path = `/api/wait?wait=${props.wait}`
+      const url = baseUrl + path
+
+      const res: string = await (
+        await fetch(url, {
+          cache: 'no-store',
+        })
+      ).json()
+      return res
+    },
+  })
+
+  return [query.data as string, query] as const
+}
+
+function MyComponent(props: { wait: number }) {
+  const [data] = useWaitQuery(props)
+
+  return <div>result: {data}</div>
+}
+
+export default function MyPage() {
+  return (
+    <>
+      <Suspense fallback={<div>waiting 100....</div>}>
+        <MyComponent wait={100} />
+      </Suspense>
+      <Suspense fallback={<div>waiting 200....</div>}>
+        <MyComponent wait={200} />
+      </Suspense>
+      <Suspense fallback={<div>waiting 300....</div>}>
+        <MyComponent wait={300} />
+      </Suspense>
+      <Suspense fallback={<div>waiting 400....</div>}>
+        <MyComponent wait={400} />
+      </Suspense>
+      <Suspense fallback={<div>waiting 500....</div>}>
+        <MyComponent wait={500} />
+      </Suspense>
+      <Suspense fallback={<div>waiting 600....</div>}>
+        <MyComponent wait={600} />
+      </Suspense>
+      <Suspense fallback={<div>waiting 700....</div>}>
+        <MyComponent wait={700} />
+      </Suspense>
+
+      <fieldset>
+        <legend>
+          combined <code>Suspense</code>-container
+        </legend>
+        <Suspense
+          fallback={
+            <>
+              <div>waiting 800....</div>
+              <div>waiting 900....</div>
+              <div>waiting 1000....</div>
+            </>
+          }
+        >
+          <MyComponent wait={800} />
+          <MyComponent wait={900} />
+          <MyComponent wait={1000} />
+        </Suspense>
+      </fieldset>
+    </>
+  )
+}
