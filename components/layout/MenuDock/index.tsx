@@ -1,20 +1,16 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import { useTheme } from "next-themes";
-import { cn } from "@/lib/ui";
+import { usePathname } from "next/navigation";
 
 import { useCurrentUser } from "@/features/user/hooks/useCurrentUser";
 import { useDockItems } from "@/features/navigation/hooks/useDockItems";
-import { navigate, isRouteActive } from "@/features/navigation/utils";
-import { useClickOutside } from "@/hooks/useClickOutside";
+import { isRouteActive } from "@/features/navigation/utils";
 import MenuDockSkeleton from "@/components/layout/MenuDock/MenuDockSkeleton";
 import MenuDockActionBtn from "./MenuDockActionBtn";
 import MenuDockProfileBtn from "./MenuDockProfileBtn";
+import MenuDockItemButton from "./MenuDockItemButton";
 
 export function MenuDock() {
-  const router = useRouter();
   const pathname = usePathname();
   const { data: user, isLoading } = useCurrentUser();
   const items = useDockItems(user);
@@ -24,6 +20,7 @@ export function MenuDock() {
   );
 
   const isActionActive = activeIndex !== -1 && items[activeIndex].isAction;
+
   if (isLoading) {
     return <MenuDockSkeleton />;
   }
@@ -57,31 +54,12 @@ export function MenuDock() {
 
           const Icon = item.icon;
           return (
-            <button
+            <MenuDockItemButton
               key={item.label}
-              onClick={() => navigate(router, item.href)}
-              className="group flex flex-1 flex-col items-center justify-center py-1 cursor-pointer"
-            >
-              <Icon
-                size={20}
-                className={cn(
-                  "transition-all",
-                  isActive
-                    ? "text-primary scale-110"
-                    : "text-muted-foreground group-hover:text-foreground",
-                )}
-              />
-              <span
-                className={cn(
-                  "mt-0.5 text-[9px] font-medium",
-                  isActive
-                    ? "text-primary"
-                    : "text-muted-foreground group-hover:text-foreground",
-                )}
-              >
-                {item.label}
-              </span>
-            </button>
+              item={item}
+              isActive={isActive}
+              Icon={Icon}
+            />
           );
         })}
       </nav>
