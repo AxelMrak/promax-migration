@@ -9,3 +9,9 @@ export const loginSchemaDef = z.object({
 });
 
 export type LoginSchema = z.infer<typeof loginSchemaDef>;
+
+export const forgotPasswordSchemaDef = z.object({
+  email: z.email("Invalid email address").nonempty("Email is required"),
+});
+
+export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchemaDef>;

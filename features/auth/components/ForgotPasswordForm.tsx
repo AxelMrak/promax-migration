@@ -1,0 +1,74 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import type { ForgotPasswordSchema } from "@/features/auth/schema";
+import { forgotPasswordSchemaDef } from "@/features/auth/schema";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
+import { sendForgotPasswordEmail } from "@/features/auth/services/forgotPassword";
+import { getErrorMessage } from "@/lib/api/errorHandler";
+
+interface ForgotPasswordFormProps {
+  handleModeSwitch?: (mode: "login" | "forgot") => void;
+}
+
+export function ForgotPasswordForm({
+  handleModeSwitch,
+}: ForgotPasswordFormProps) {
+  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<ForgotPasswordSchema>({
+    resolver: zodResolver(forgotPasswordSchemaDef),
+    mode: "onChange",
+  });
+
+  const onSubmit = async (values: ForgotPasswordSchema) => {
+    toast.promise(sendForgotPasswordEmail(values), {
+      loading: "Versturen...",
+      success: () => {
+        router.refresh();
+        return "Herstellink verzonden! Controleer je e-mail.";
+      },
+      error: (err) => getErrorMessage(err),
+    });
+  };
+
+  return (
+    <form id="forgot-password-form" onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
+      <Input
+        label="E-mail"
+        placeholder="alparslan@promax.com"
+        autoComplete="email"
+        required
+        {...register("email")}
+        error={errors.email?.message}
+      />
+
+      <section className="flex flex-col items-center w-full gap-2 ">
+        <Button
+          type="submit"
+          className="w-full"
+          isLoading={isSubmitting}
+          disabled={isSubmitting}
+        >
+          Herstellink verzenden
+        </Button>
+        <Button
+          variant="outline"
+          type="button"
+          className="flex items-center gap-2 w-full"
+          onClick={() => handleModeSwitch?.("login")}
+        >
+          Terug naar inloggen
+        </Button>
+      </section>
+    </form>
+  );
+}

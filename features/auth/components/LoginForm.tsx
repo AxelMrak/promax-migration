@@ -9,8 +9,13 @@ import type { LoginSchema } from "@/features/auth/schema";
 import { loginSchemaDef } from "@/features/auth/schema";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { getErrorMessage } from "@/lib/api/errorHandler";
 
-export function LoginForm() {
+interface LoginFormProps {
+  handleModeSwitch?: (mode: "login" | "forgot") => void;
+}
+
+export function LoginForm({ handleModeSwitch }: LoginFormProps) {
   const router = useRouter();
   const {
     register,
@@ -34,7 +39,7 @@ export function LoginForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Inloggen mislukt");
+        throw new Error(data.error || data.detail || data.message || "Inloggen mislukt");
       }
 
       return data;
@@ -43,7 +48,7 @@ export function LoginForm() {
     toast.promise(loginPromise, {
       loading: "Bezig met inloggen...",
       success: "Succesvol ingelogd",
-      error: (err) => (err instanceof Error ? err.message : "Inloggen mislukt"),
+      error: (err) => getErrorMessage(err),
     });
 
     try {
@@ -55,22 +60,36 @@ export function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
+    <form id="login-form" onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
       <Input
         label="Gebruikersnaam of E-mail"
         placeholder="alparslan@promax.com"
         autoComplete="username"
+        required
         {...register("username")}
         error={errors.username?.message}
       />
-      <Input
-        type="password"
-        label="Wachtwoord"
-        placeholder="Uw wachtwoord"
-        autoComplete="current-password"
-        {...register("password")}
-        error={errors.password?.message}
-      />
+      <section className="w-full flex flex-col items-start ">
+        <Input
+          type="password"
+          label="Wachtwoord"
+          placeholder="Uw wachtwoord"
+          autoComplete="current-password"
+          className="w-full"
+          required
+          {...register("password")}
+          error={errors.password?.message}
+        />
+        <Button
+          variant="outline"
+          size="sm"
+          className="text-xs border-0 px-0 m-0  min-h-0 text-primary transition-colors hover:bg-transparent hover:underline mt-1 cursor-pointer"
+          onClick={() => handleModeSwitch?.("forgot")}
+          type="button"
+        >
+          Wachtwoord vergeten?
+        </Button>
+      </section>
       <Button
         type="submit"
         className="w-full"
