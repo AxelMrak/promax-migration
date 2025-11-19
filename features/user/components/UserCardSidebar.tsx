@@ -13,7 +13,7 @@ export default function UserCardSidebar() {
   }
 
   return (
-    <section className="p-4  space-y-2">
+    <section className="p-2  space-y-2">
       <div className="flex items-center gap-3 mb-2">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-2 justify-between w-full">

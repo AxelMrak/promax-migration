@@ -19,7 +19,7 @@ export function Sidebar() {
       <Separator className="w-full" />
       <Navigation />
       <Separator className="w-full" />
-      <section className="w-full flex flex-col items-center">
+      <section className="w-full flex flex-col items-center gap-2">
         <AppDownloadsSection />
         <Separator className="w-full" />
         <UserCardSidebar />

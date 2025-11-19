@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/feedback/Skeleton";
 
 export default function UserSectionSkeleton() {
   return (
-    <section className="p-4  space-y-2">
+    <section className="p-4 space-y-2 w-full">
       <div className="flex flex-col gap-1 mb-2">
         <div className="flex items-center justify-between w-full mb-1">
           <Skeleton className="h-4 w-24" />
