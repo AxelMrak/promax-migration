@@ -3,6 +3,7 @@ import GlobalSearch from "@/features/global-search/components/GlobalSearch";
 import { Navigation } from "@/features/navigation/component/Navigation";
 import AppDownloadsSection from "../sections/AppDownloadsSection";
 import { Separator } from "../ui/Separator";
+import UserCardSidebar from "@/features/user/components/UserCardSidebar";
 
 export function Sidebar() {
   return (
@@ -21,6 +22,7 @@ export function Sidebar() {
       <section className="w-full flex flex-col items-center">
         <AppDownloadsSection />
         <Separator className="w-full" />
+        <UserCardSidebar />
       </section>
     </aside>
   );

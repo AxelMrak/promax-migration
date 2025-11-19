@@ -5,7 +5,7 @@ import { Smartphone } from "lucide-react";
 
 export default function AppDownloadsSection() {
   return (
-    <section className="flex w-full flex-col gap-2 px-4">
+    <section className="flex w-full flex-col gap-2 px-4 py-2">
       <h3 className="mb-2 text-xs font-semibold text-muted-foreground">
         Extensies downloaden
       </h3>
