@@ -8,7 +8,7 @@ import NavigationItemSkeleton from "./NavigationItemSkeleton";
 export function Navigation() {
   const { data: user, isLoading } = useCurrentUser();
   return (
-    <nav className="flex-1 overflow-y-auto w-full ">
+    <nav className="flex-1 overflow-y-auto w-full p-4">
       <ul className="space-y-3">
         {isLoading
           ? Array.from({ length: 3 }).map((_, index) => (
