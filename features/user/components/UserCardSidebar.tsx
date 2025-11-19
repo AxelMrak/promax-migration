@@ -5,6 +5,7 @@ import Link from "next/link";
 import { RoleBadge } from "@/features/user/components/RoleBadge";
 import UserCardSidebarSkeleton from "@/features/user/components/UserCardSidebarSkeleton";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 export default function UserCardSidebar() {
   const { data: user, isLoading } = useCurrentUser();
@@ -13,6 +14,22 @@ export default function UserCardSidebar() {
   if (isLoading || !user) {
     return <UserCardSidebarSkeleton />;
   }
+
+  const handleLogout = async () => {
+    const logoutPromise = fetch("/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+
+    toast.promise(logoutPromise, {
+      loading: "Uitloggen...",
+      success: "Je bent succesvol uitgelogd!",
+      error: "Er is een fout opgetreden tijdens het uitloggen.",
+    });
+
+    await logoutPromise;
+    router.refresh();
+  };
 
   return (
     <section className="p-2  space-y-2">
@@ -36,7 +53,7 @@ export default function UserCardSidebar() {
           Settings
         </Link>
         <button
-          onClick={() => router.push('/api/auth/logout')}
+          onClick={handleLogout}
           className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium w-full bg-background text-destructive border border-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
         >
           <LogOut className="h-3.5 w-3.5" />
