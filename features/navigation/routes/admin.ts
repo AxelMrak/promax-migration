@@ -3,18 +3,18 @@ import { BookUser, HomeIcon, LayoutList } from "lucide-react";
 
 export const ADMIN_ROUTES: RouteItem[] = [
   {
-    label: "Dashboard",
+    label: "Home",
     icon: HomeIcon,
     href: "/dashboard",
   },
   {
     label: "Werkbonnen",
     icon: LayoutList,
-    href: "/werkbonnen",
+    href: "/dashboard/werkbon",
   },
   {
     label: "Monteurs",
     icon: BookUser,
-    href: "/monteurs",
+    href: "/dashboard/monteur",
   },
 ];
