@@ -25,13 +25,10 @@ export function ForgotPasswordForm({
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    watch,
   } = useForm<ForgotPasswordSchema>({
     resolver: zodResolver(forgotPasswordSchemaDef),
     mode: "onChange",
   });
-
-  const emailValue = watch("email");
 
   const onSubmit = async (values: ForgotPasswordSchema) => {
     toast.promise(sendForgotPasswordEmail(values), {
