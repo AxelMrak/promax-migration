@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, ChevronRight } from "lucide-react";
@@ -31,16 +31,13 @@ export default function NavigationItem({
     return item.subItems!.some(checkChild);
   }, [item.subItems, hasSubItems, pathname]);
 
-  const [isExpanded, setIsExpanded] = useState(isChildActive);
-
-  useEffect(() => {
-    if (isChildActive) setIsExpanded(true);
-  }, [isChildActive]);
+  const [isManualExpanded, setIsManualExpanded] = useState(false);
+  const isExpanded = isChildActive || isManualExpanded;
 
   const handleToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsExpanded((prev) => !prev);
+    setIsManualExpanded((prev) => !prev);
   };
 
   const isActive = isCurrentRoute || isChildActive;

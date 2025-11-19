@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { ViewTransition } from "react";
 
 interface AppProviderProps {
   props?: React.ComponentProps<typeof NextThemesProvider>;
@@ -15,6 +16,7 @@ export function AppProvider({ children, ...props }: AppProviderProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ViewTransition />
       <NextThemesProvider
         attribute="class"
         defaultTheme="system"

@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 
@@ -8,46 +7,23 @@ import { Button } from "@/components/ui/Button";
 
 type ThemeValue = "light" | "dark";
 
-//TODO: Improve and refactor that
-declare global {
-  interface Document {
-    startViewTransition?: (
-      callback: () => void | Promise<void>,
-    ) => ViewTransition;
-  }
-
-  interface ViewTransition {
-    ready: Promise<void>;
-    finished: Promise<void>;
-    updateCallbackDone: Promise<void>;
-  }
-}
-
 export function ThemeSwitcher() {
   const { resolvedTheme, setTheme } = useTheme();
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const isReady = Boolean(resolvedTheme);
 
   const activeTheme = (resolvedTheme ?? "light") as ThemeValue;
 
   const handleChangeTheme = () => {
     const nextTheme: ThemeValue = activeTheme === "light" ? "dark" : "light";
-    const applyTheme = () => setTheme(nextTheme);
 
-    if (typeof document !== "undefined" && document.startViewTransition) {
-      document.startViewTransition(() => {
-        applyTheme();
-      });
-      return;
+    if (document.startViewTransition) {
+      document.startViewTransition(() => setTheme(nextTheme));
+    } else {
+      setTheme(nextTheme);
     }
-
-    applyTheme();
   };
 
-  if (!isMounted) {
+  if (!isReady) {
     return (
       <div className="fixed bottom-2 right-2 md:bottom-4 md:right-4">
         <div className="h-12 w-12 rounded-full border border-border/60 bg-card/70 shadow-inner backdrop-blur" />

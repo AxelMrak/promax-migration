@@ -7,15 +7,8 @@ import { LoginForm } from "@/features/auth/components/LoginForm";
 import { useRouter } from "next/navigation";
 
 export function AuthPanel() {
-  const [mode, setMode] = useState<"login" | "forgot">("login");
+  const [mode] = useState<"login" | "forgot">("login");
   const router = useRouter();
-
-  const handleLoginSuccess = () => {
-    router.refresh();
-  };
-
-  const toggle = () =>
-    setMode((prev) => (prev === "login" ? "forgot" : "login"));
 
   return (
     <Card className="w-full max-w-xs space-y-4 border-border/30 bg-background/90 backdrop-blur-xs md:max-w-md">
@@ -37,7 +30,7 @@ export function AuthPanel() {
       </CardHeader>
       <CardContent>
         {mode === "login" ? (
-          <LoginForm onSuccess={handleLoginSuccess} />
+          <LoginForm />
         ) : (
           <p className="mb-4 text-sm text-muted-foreground">
             Voer uw e-mailadres in om uw wachtwoord te herstellen.

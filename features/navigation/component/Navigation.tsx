@@ -14,13 +14,15 @@ export function Navigation() {
           ? Array.from({ length: 3 }).map((_, index) => (
               <NavigationItemSkeleton key={`skeleton-${index}`} depth={0} />
             ))
-          : getRoutesForRole(user?.user_level).map((route, index) => (
+          : user
+            ? getRoutesForRole(user.user_level).map((route, index) => (
               <NavigationItem
                 key={`${route.label}-${index}`}
                 item={route}
                 depth={0}
               />
-            ))}
+            ))
+            : null}
       </ul>
     </nav>
   );

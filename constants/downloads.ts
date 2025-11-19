@@ -1,3 +1,5 @@
+import type { ComponentType, SVGProps } from "react";
+
 import { ChromeIcon } from "@/components/icons/Chrome";
 import { Highlighter } from "lucide-react";
 import toast from "react-hot-toast";
@@ -9,7 +11,7 @@ export const EXTENSION_DOWNLOAD_URL =
 
 export interface AppDownloadItem {
   label: string;
-  icon: any;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
   onClick: () => void;
 }
 

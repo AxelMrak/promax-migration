@@ -4,9 +4,11 @@ import { LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 import { RoleBadge } from "@/features/user/components/RoleBadge";
 import UserCardSidebarSkeleton from "@/features/user/components/UserCardSidebarSkeleton";
+import { useRouter } from "next/navigation";
 
 export default function UserCardSidebar() {
   const { data: user, isLoading } = useCurrentUser();
+  const router = useRouter();
 
   if (isLoading || !user) {
     return <UserCardSidebarSkeleton />;
@@ -34,7 +36,7 @@ export default function UserCardSidebar() {
           Settings
         </Link>
         <button
-          onClick="/api/auth/logout"
+          onClick={() => router.push('/api/auth/logout')}
           className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium w-full bg-background text-destructive border border-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
         >
           <LogOut className="h-3.5 w-3.5" />
