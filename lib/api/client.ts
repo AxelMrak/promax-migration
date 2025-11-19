@@ -1,6 +1,7 @@
 import { BASE_API_URL } from "@/constants/env";
 import { getCookie } from "@/lib/cookies";
 import type { RequestOptions } from "@/lib/api/types";
+import { ACCESS_COOKIE_NAME } from "@/constants/auth";
 
 export class ApiError extends Error {
   constructor(
@@ -61,8 +62,7 @@ export async function authApi<T = unknown>(
   path: string,
   options: RequestOptions = {},
 ): Promise<T> {
-  const accessToken = await getCookie("access_token");
-
+  const accessToken = await getCookie(ACCESS_COOKIE_NAME);
   return api<T>(path, {
     ...options,
     headers: {
