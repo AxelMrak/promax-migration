@@ -4,11 +4,14 @@ import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import Image from "next/image";
 import { LoginForm } from "@/features/auth/components/LoginForm";
-import { useRouter } from "next/navigation";
+import { ForgotPasswordForm } from "@/features/auth/components/ForgotPasswordForm";
 
 export function AuthPanel() {
-  const [mode] = useState<"login" | "forgot">("login");
-  const router = useRouter();
+  const [mode, setMode] = useState<"login" | "forgot">("login");
+
+  const handleModeSwitch = (newMode: "login" | "forgot") => {
+    setMode(newMode);
+  };
 
   return (
     <Card className="w-full max-w-xs space-y-4 border-border/30 bg-background/90 backdrop-blur-xs md:max-w-md">
@@ -22,19 +25,17 @@ export function AuthPanel() {
         <CardTitle className="text-center text-2xl">
           {mode === "login" ? "Welkom terug" : "Wachtwoord herstellen"}
         </CardTitle>
-        <p className="text-md text-muted-foreground">
+        <p className="text-md text-muted-foreground text-center">
           {mode === "login"
             ? "Log in op uw account"
-            : "Voer uw e-mailadres in om uw wachtwoord te herstellen"}
+            : "Voer uw e-mailadres in om de herstellink te verzenden"}
         </p>
       </CardHeader>
       <CardContent>
         {mode === "login" ? (
-          <LoginForm />
+          <LoginForm handleModeSwitch={handleModeSwitch} />
         ) : (
-          <p className="mb-4 text-sm text-muted-foreground">
-            Voer uw e-mailadres in om uw wachtwoord te herstellen.
-          </p>
+          <ForgotPasswordForm handleModeSwitch={handleModeSwitch} />
         )}
       </CardContent>
     </Card>

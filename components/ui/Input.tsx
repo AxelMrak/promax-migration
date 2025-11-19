@@ -29,7 +29,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       id || label?.toLowerCase().replace(/\s+/g, "-") || undefined;
 
     return (
-      <div className="space-y-1.5">
+      <div className="w-full flex flex-col gap-2">
         {label && (
           <label
             htmlFor={inputId}

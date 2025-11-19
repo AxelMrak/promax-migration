@@ -6,6 +6,7 @@ import { RoleBadge } from "@/features/user/components/RoleBadge";
 import UserCardSidebarSkeleton from "@/features/user/components/UserCardSidebarSkeleton";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
+import { getErrorMessage } from "@/lib/api/errorHandler";
 
 export default function UserCardSidebar() {
   const { data: user, isLoading } = useCurrentUser();
@@ -16,15 +17,24 @@ export default function UserCardSidebar() {
   }
 
   const handleLogout = async () => {
-    const logoutPromise = fetch("/api/auth/logout", {
-      method: "POST",
-      credentials: "include",
-    });
+    const logoutPromise = (async () => {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || data.detail || data.message || "Logout failed");
+      }
+
+      return response;
+    })();
 
     toast.promise(logoutPromise, {
       loading: "Uitloggen...",
       success: "Je bent succesvol uitgelogd!",
-      error: "Er is een fout opgetreden tijdens het uitloggen.",
+      error: (err) => getErrorMessage(err),
     });
 
     await logoutPromise;

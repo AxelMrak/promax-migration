@@ -1,5 +1,5 @@
 import { ACCESS_COOKIE_NAME, REFRESH_COOKIE_NAME } from "@/constants/auth";
-import { ApiError } from "@/lib/api/client";
+import { ApiError } from "@/lib/api/error";
 import { IS_PROD } from "@/constants/env";
 import { setCookie } from "@/lib/cookies";
 

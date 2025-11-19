@@ -7,7 +7,7 @@ import {
   ACCESS_COOKIE_MAX_AGE,
   REFRESH_COOKIE_MAX_AGE,
 } from "@/constants/auth";
-import { ApiError } from "@/lib/api/client";
+import { ApiError } from "@/lib/api/error";
 import { IS_PROD } from "@/constants/env";
 import { setCookie } from "@/lib/cookies";
 

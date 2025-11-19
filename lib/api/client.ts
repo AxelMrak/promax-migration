@@ -2,17 +2,7 @@ import { BASE_API_URL } from "@/constants/env";
 import { getCookie } from "@/lib/cookies";
 import type { RequestOptions } from "@/lib/api/types";
 import { ACCESS_COOKIE_NAME } from "@/constants/auth";
-
-export class ApiError extends Error {
-  constructor(
-    message: string,
-    public statusCode: number,
-    public details?: unknown,
-  ) {
-    super(message);
-    this.name = "ApiError";
-  }
-}
+import { ApiError } from "@/lib/api/error";
 
 function isFormData(value: unknown): value is FormData {
   return typeof FormData !== "undefined" && value instanceof FormData;
@@ -51,7 +41,8 @@ export async function api<T = unknown>(
     } catch {
       throw new ApiError(res.statusText, res.status);
     }
-    throw new ApiError(parsed?.detail || res.statusText, res.status, parsed);
+    const errorMessage = parsed?.detail || parsed?.message || parsed?.error || res.statusText;
+    throw new ApiError(errorMessage, res.status, parsed);
   }
 
   if (res.status === 204) return {} as T;
