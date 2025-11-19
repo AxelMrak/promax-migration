@@ -9,7 +9,6 @@ type ThemeValue = "light" | "dark";
 
 export function ThemeSwitcher() {
   const { resolvedTheme, setTheme } = useTheme();
-  const isReady = Boolean(resolvedTheme);
 
   const activeTheme = (resolvedTheme ?? "light") as ThemeValue;
 
@@ -22,14 +21,6 @@ export function ThemeSwitcher() {
       setTheme(nextTheme);
     }
   };
-
-  if (!isReady) {
-    return (
-      <div className="fixed bottom-2 right-2 md:bottom-4 md:right-4">
-        <div className="h-12 w-12 rounded-full border border-border/60 bg-card/70 shadow-inner backdrop-blur" />
-      </div>
-    );
-  }
 
   return (
     <Button
