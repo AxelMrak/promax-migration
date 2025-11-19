@@ -1,4 +1,4 @@
 export type Truck = {
   id: string;
-  licensePlate: string;
+  license_plate: string;
 };
