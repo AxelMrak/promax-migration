@@ -5,7 +5,7 @@ export default function DashboardPage() {
         style={{ backgroundImage: `url('/images/promax/main.webp')` }}
         className="h-56 w-full rounded-lg bg-cover bg-center bg-muted/50 flex items-center justify-center relative"
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent rounded-lg" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/50 to-transparent rounded-lg" />
         <div className="absolute left-6 bottom-6 ">
           <h1 className="text-lg md:text-xl lg:text-3xl text-white drop-shadow-lg ">
             Welkom bij ProMax Dashboard

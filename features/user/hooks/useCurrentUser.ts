@@ -1,4 +1,4 @@
-import { fetchCurrentUser } from "@/lib/api/user";
+import { fetchCurrentUser } from "@/features/user/services/fetchCurrentUser";
 import { useQuery } from "@tanstack/react-query";
 import { User } from "@/features/user/types";
 
