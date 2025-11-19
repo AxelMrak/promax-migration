@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,29 +19,66 @@ interface ForgotPasswordFormProps {
 export function ForgotPasswordForm({
   handleModeSwitch,
 }: ForgotPasswordFormProps) {
-  const router = useRouter();
+  const [isEmailSent, setIsEmailSent] = useState(false);
+  const [sentEmail, setSentEmail] = useState("");
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    watch,
   } = useForm<ForgotPasswordSchema>({
     resolver: zodResolver(forgotPasswordSchemaDef),
     mode: "onChange",
   });
 
+  const emailValue = watch("email");
+
   const onSubmit = async (values: ForgotPasswordSchema) => {
     toast.promise(sendForgotPasswordEmail(values), {
       loading: "Versturen...",
       success: () => {
-        router.refresh();
+        setIsEmailSent(true);
+        setSentEmail(values.email);
         return "Herstellink verzonden! Controleer je e-mail.";
       },
       error: (err) => getErrorMessage(err),
     });
   };
 
+  if (isEmailSent) {
+    return (
+      <div className="grid gap-4">
+        <div className="text-center space-y-2">
+          <p className="text-sm text-muted-foreground">E-mail verzonden naar</p>
+          <p className="text-sm font-medium break-all">{sentEmail}</p>
+        </div>
+
+        <section className="flex flex-col items-center w-full gap-2">
+          <Button
+            type="button"
+            className="w-full"
+            onClick={() => {
+              setIsEmailSent(false);
+              setSentEmail("");
+            }}
+          >
+            Opnieuw proberen
+          </Button>
+          <Button
+            variant="outline"
+            type="button"
+            className="flex items-center gap-2 w-full"
+            onClick={() => handleModeSwitch?.("login")}
+          >
+            Terug naar inloggen
+          </Button>
+        </section>
+      </div>
+    );
+  }
+
   return (
-    <form id="forgot-password-form" onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
       <Input
         label="E-mail"
         placeholder="alparslan@promax.com"
@@ -51,7 +88,7 @@ export function ForgotPasswordForm({
         error={errors.email?.message}
       />
 
-      <section className="flex flex-col items-center w-full gap-2 ">
+      <section className="flex flex-col items-center w-full gap-2">
         <Button
           type="submit"
           className="w-full"

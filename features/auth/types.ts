@@ -6,3 +6,7 @@ export type AuthTokens = {
 export type ForgotPasswordResponse = {
   message: string;
 };
+
+export type ResetPasswordResponse = {
+  message: string;
+};
