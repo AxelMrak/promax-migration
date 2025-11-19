@@ -61,13 +61,14 @@ export async function authApi<T = unknown>(
   path: string,
   options: RequestOptions = {},
 ): Promise<T> {
-  const accessToken = getCookie("access_token");
+  const accessToken = await getCookie("access_token");
 
   return api<T>(path, {
     ...options,
     headers: {
       ...options.headers,
       Authorization: `Bearer ${accessToken}`,
+      credentials: "include",
     },
   });
 }
