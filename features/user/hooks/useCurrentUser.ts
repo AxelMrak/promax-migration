@@ -1,7 +1,7 @@
 import { fetchCurrentUser } from "@/lib/api/user";
 import { useQuery } from "@tanstack/react-query";
 
-export function useCurrentUser() {
+export function useCurrentUser(): ReturnType<typeof useQuery> {
   return useQuery({
     queryKey: ["currentUser"],
     queryFn: fetchCurrentUser,
