@@ -38,10 +38,10 @@ export async function fetchWerkbonById(id: number) {
   return authApi<Werkbon>(`/werkbon/${id}/`);
 }
 
-export async function createWerkbon(payload: unknown) {
+export async function createWerkbon(formData: FormData) {
   return authApi<Werkbon>("/werkbon/", {
     method: "POST",
-    body: payload,
+    body: formData,
   });
 }
 

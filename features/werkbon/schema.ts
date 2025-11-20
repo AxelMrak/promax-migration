@@ -11,3 +11,16 @@ export const WerkbonFiltersSchema = z.object({
 });
 
 export type WerkbonFilters = z.infer<typeof WerkbonFiltersSchema>;
+
+export const WerkbonFormSchemaDef = z.object({
+  title: z.string().min(1, "Titel is verplicht"),
+  description: z.string(),
+  images: z.array(z.instanceof(File)).optional(),
+  monteur: z
+    .string()
+    .trim()
+    .optional()
+    .transform((value) => (value === "" ? undefined : value)),
+});
+
+export type WerkbonFormSchema = z.infer<typeof WerkbonFormSchemaDef>;
