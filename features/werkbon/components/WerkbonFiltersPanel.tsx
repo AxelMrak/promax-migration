@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/Select";
 import { Badge } from "@/components/ui/Badge";
+import { useVisibleUsers } from "@/features/user/hooks/useVisibleUsers";
 
 interface WerkbonFiltersPanelProps {
   columns: Array<{
@@ -37,13 +38,6 @@ interface WerkbonFiltersPanelProps {
   hasActiveFilters: boolean;
 }
 
-const MOCK_USERS = [
-  { value: "1", label: "John Doe" },
-  { value: "2", label: "Jane Smith" },
-  { value: "3", label: "Mike Johnson" },
-  { value: "4", label: "Sarah Wilson" },
-];
-
 export function WerkbonFiltersPanel({
   activeFilters,
   updateFilter,
@@ -52,11 +46,18 @@ export function WerkbonFiltersPanel({
 }: WerkbonFiltersPanelProps) {
   const { data: baseData, isLoading: isBaseDataLoading } = useBaseData();
 
+  const { users, isLoading } = useVisibleUsers();
+
   const currentStatusValue =
     WERKBON_REVERSE_INVOICE_MAP[activeFilters.is_invoiced ?? "all"] || "all";
   const currentStatusObj = WERKBON_STATUSES.find(
     (s) => s.value === currentStatusValue,
   );
+
+  const userOptions = users.map((user) => ({
+    value: String(user.id),
+    label: `${user.first_name} ${user.last_name}`,
+  }));
 
   const licensePlateOptions =
     baseData?.trucks.map((truck) => ({
@@ -139,7 +140,7 @@ export function WerkbonFiltersPanel({
 
         <FilterField label="Users" icon={Users}>
           <MultiSelectFilter
-            options={MOCK_USERS}
+            options={userOptions}
             value={
               activeFilters.created_by
                 ? activeFilters.created_by.split(",")

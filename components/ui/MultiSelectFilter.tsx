@@ -31,13 +31,13 @@ export function MultiSelectFilter({
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 200);
 
-  const filteredOptions = options.filter(option =>
-    option.label.toLowerCase().includes(debouncedSearch.toLowerCase())
+  const filteredOptions = options.filter((option) =>
+    option.label.toLowerCase().includes(debouncedSearch.toLowerCase()),
   );
 
   const handleToggle = (optionValue: string) => {
     const newValue = value.includes(optionValue)
-      ? value.filter(v => v !== optionValue)
+      ? value.filter((v) => v !== optionValue)
       : [...value, optionValue];
     onChange(newValue);
   };
@@ -47,8 +47,8 @@ export function MultiSelectFilter({
   };
 
   const selectedLabels = options
-    .filter(option => value.includes(option.value))
-    .map(option => option.label);
+    .filter((option) => value.includes(option.value))
+    .map((option) => option.label);
 
   return (
     <div className="w-full">
@@ -76,7 +76,7 @@ export function MultiSelectFilter({
             <ChevronDown className="h-4 w-4 opacity-50" />
           </Button>
         </PopoverTrigger>
-        
+
         <PopoverContent className="w-80 p-0" align="start">
           <div className="p-3 border-b border-border">
             <Input
@@ -86,7 +86,7 @@ export function MultiSelectFilter({
               className="h-8 border-border"
             />
           </div>
-          
+
           <div className="max-h-60 overflow-y-auto">
             {filteredOptions.length === 0 ? (
               <div className="p-3 text-sm text-muted-foreground">
@@ -96,7 +96,7 @@ export function MultiSelectFilter({
               <div className="p-1">
                 {filteredOptions.map((option) => {
                   const isSelected = value.includes(option.value);
-                  
+
                   return (
                     <button
                       key={option.value}
@@ -113,7 +113,7 @@ export function MultiSelectFilter({
               </div>
             )}
           </div>
-          
+
           {value.length > 0 && (
             <div className="border-t border-border p-3">
               <Button
@@ -132,3 +132,4 @@ export function MultiSelectFilter({
     </div>
   );
 }
+
