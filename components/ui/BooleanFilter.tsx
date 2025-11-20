@@ -34,7 +34,7 @@ export function BooleanFilter({
         return (
           <Button
             key={String(option.value)}
-            variant={isActive ? "default" : "outline"}
+            variant={isActive ? "primary" : "outline"}
             size="sm"
             onClick={() => onChange(option.value)}
             className="h-8 px-3 text-xs"

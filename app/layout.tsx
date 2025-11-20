@@ -1,18 +1,7 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
 import "@/styles/globals.css";
 import { AppProvider } from "@/app/providers/app-provider";
 import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = "ProMax APP | OCR App";
@@ -28,9 +17,12 @@ export async function generateMetadata(): Promise<Metadata> {
       apple: "/meta/promax/apple-touch-icon.png",
     },
     manifest: "/meta/promax/site.webmanifest",
-    themeColor: "#f07f1c",
   };
 }
+
+export const viewport: Viewport = {
+  themeColor: "#f07f1c",
+};
 
 export default function RootLayout({
   children,
@@ -39,10 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased theme-promax`}
-        suppressHydrationWarning
-      >
+      <body className="antialiased theme-promax" suppressHydrationWarning>
         <AppProvider>
           {children}
           <ThemeSwitcher />

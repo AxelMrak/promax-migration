@@ -89,10 +89,10 @@ export default function MenuDockProfileBtn({
               {user?.first_name} {user?.last_name}
             </span>
           )}
-          {userIsLoading && user ? (
+          {userIsLoading ? (
             <Skeleton className="h-4 w-12 rounded" />
           ) : (
-            <RoleBadge role={user.user_level} size="sm" />
+            user && <RoleBadge role={user.user_level} />
           )}
         </div>
 

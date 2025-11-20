@@ -50,15 +50,28 @@ function DropdownMenuTrigger({
   };
 
   if (asChild) {
-    return React.cloneElement(children as React.ReactElement, {
+    if (!React.isValidElement(children)) {
+      throw new Error(
+        "DropdownMenuTrigger with asChild requires a single React element child.",
+      );
+    }
+    const child = children as React.ReactElement<Record<string, unknown>>;
+    return React.cloneElement(child, {
+      ...child.props,
       onClick: handleClick,
       onMouseDown: (e: React.MouseEvent) => {
         e.stopPropagation();
-        (children as React.ReactElement).props?.onMouseDown?.(e);
+        const original = (child.props as { onMouseDown?: unknown }).onMouseDown;
+        if (typeof original === "function") {
+          original(e);
+        }
       },
       onTouchStart: (e: React.TouchEvent) => {
         e.stopPropagation();
-        (children as React.ReactElement).props?.onTouchStart?.(e);
+        const original = (child.props as { onTouchStart?: unknown }).onTouchStart;
+        if (typeof original === "function") {
+          original(e);
+        }
       },
       "data-state": open ? "open" : "closed",
     });

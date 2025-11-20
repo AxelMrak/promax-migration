@@ -38,8 +38,8 @@ export default function CreateWerkbonForm({
     defaultValues: {
       title: "",
       description: "",
-      monteur: "",
-    },
+      monteur: undefined,
+    } satisfies Partial<WerkbonFormSchema>,
   });
 
   const handleFormSubmit = async (values: WerkbonFormSchema) => {
@@ -47,8 +47,9 @@ export default function CreateWerkbonForm({
 
     formData.append("title", values.title);
     formData.append("description", values.description);
-    if (values.monteur) {
-      formData.append("monteur", values.monteur);
+    const monteurValue = values.monteur?.trim();
+    if (monteurValue) {
+      formData.append("monteur", monteurValue);
     }
 
     images.forEach((img) => {

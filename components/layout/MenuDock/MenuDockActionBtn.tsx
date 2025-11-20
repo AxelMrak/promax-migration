@@ -1,3 +1,4 @@
+import type { RouteItemHref } from "@/features/navigation/types";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/ui";
 import { navigate } from "@/features/navigation/utils";
@@ -7,7 +8,7 @@ export default function MenuDockActionBtn({
   item,
   isActive,
 }: {
-  item: { label: string; href: string };
+  item: { label: string; href: RouteItemHref };
   isActive: boolean;
 }) {
   const router = useRouter();

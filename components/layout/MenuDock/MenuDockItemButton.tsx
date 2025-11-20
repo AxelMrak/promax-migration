@@ -1,9 +1,10 @@
+import type { RouteItemHref } from "@/features/navigation/types";
 import { cn } from "@/lib/ui";
 import { navigate } from "@/features/navigation/utils";
 import { useRouter } from "next/navigation";
 
 interface MenuDockItemButtonProps {
-  item: { label: string; href: string };
+  item: { label: string; href: RouteItemHref };
   isActive: boolean;
   Icon: React.ComponentType<{ size?: number; className?: string }>;
 }

@@ -1,7 +1,12 @@
 import { CheckCircle, Clock } from "lucide-react";
 
 export const WERKBON_STATUSES = [
-  { value: "all", label: "All Statuses", variant: "outline" as const },
+  {
+    value: "all",
+    label: "All Statuses",
+    variant: "outline" as const,
+    icon: undefined,
+  },
   {
     value: "invoiced",
     label: "Invoiced",

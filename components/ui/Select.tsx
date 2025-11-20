@@ -172,7 +172,7 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
     const { value: selectedValue, onValueChange, setOpen } = useSelectContext();
     const isSelected = selectedValue === value;
 
-    const handleClick = (e: React.MouseEvent) => {
+    const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
       if (disabled) {
         e.preventDefault();
         return;

@@ -46,7 +46,7 @@ export default function NavigationItem({
     "group flex items-center justify-between w-full rounded-lg transition-colors duration-200",
     depth === 0 ? "px-4 py-3" : "px-4 py-2 ml-2",
     isActive
-      ? "text-primary bg-primary/10 border border-primary shadow-sm transition-shadow hover:shadow-md"
+      ? "text-primary-foreground bg-primary  shadow-sm transition-shadow hover:shadow-md"
       : "hover:bg-accent hover:text-accent-foreground text-muted-foreground",
   );
 

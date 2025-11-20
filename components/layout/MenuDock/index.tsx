@@ -9,11 +9,12 @@ import MenuDockSkeleton from "@/components/layout/MenuDock/MenuDockSkeleton";
 import MenuDockActionBtn from "@/components/layout/MenuDock/MenuDockActionBtn";
 import MenuDockProfileBtn from "@/components/layout/MenuDock/MenuDockProfileBtn";
 import MenuDockItemButton from "@/components/layout/MenuDock/MenuDockItemButton";
+import type { RouteItemHref } from "@/features/navigation/types";
 
 export interface MenuDockItem {
   label: string;
   icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  href?: string;
+  href?: RouteItemHref;
   isProfile?: boolean;
   isAction?: boolean;
 }
@@ -24,10 +25,10 @@ export function MenuDock() {
   const items = useDockItems(user);
 
   const activeIndex = items.findIndex((item) =>
-    isRouteActive(item.href, pathname),
+    item.href ? isRouteActive(item.href, pathname) : false,
   );
 
-  const isActionActive = activeIndex !== -1 && items[activeIndex].isAction;
+  const isActionActive = activeIndex !== -1 && !!items[activeIndex]?.isAction;
 
   if (isLoading) {
     return <MenuDockSkeleton />;
@@ -40,10 +41,11 @@ export function MenuDock() {
           const isActive = index === activeIndex;
 
           if (item.isAction) {
+            if (!item.href) return null;
             return (
               <MenuDockActionBtn
                 key="action"
-                item={item}
+                item={{ label: item.label, href: item.href }}
                 isActive={isActionActive}
               />
             );
@@ -61,10 +63,11 @@ export function MenuDock() {
           }
 
           const Icon = item.icon;
+          if (!item.href || !Icon) return null;
           return (
             <MenuDockItemButton
               key={item.label}
-              item={item}
+              item={{ label: item.label, href: item.href }}
               isActive={isActive}
               Icon={Icon}
             />

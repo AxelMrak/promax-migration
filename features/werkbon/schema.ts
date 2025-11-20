@@ -16,11 +16,7 @@ export const WerkbonFormSchemaDef = z.object({
   title: z.string().min(1, "Titel is verplicht"),
   description: z.string(),
   images: z.array(z.instanceof(File)).optional(),
-  monteur: z
-    .string()
-    .trim()
-    .optional()
-    .transform((value) => (value === "" ? undefined : value)),
+  monteur: z.string().trim().optional(),
 });
 
 export type WerkbonFormSchema = z.infer<typeof WerkbonFormSchemaDef>;

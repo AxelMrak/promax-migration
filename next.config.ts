@@ -5,9 +5,6 @@ const nextConfig: NextConfig = {
     viewTransition: true,
   },
   reactCompiler: true,
-  turbopack: {
-    root: "./",
-  },
 };
 
 export default nextConfig;
