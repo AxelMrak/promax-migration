@@ -28,7 +28,7 @@ function DataSelectSkeleton({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "h-9 rounded-md border border-input bg-background min-w-60 animate-pulse",
+        "h-9 rounded-md border border-input bg-background min-w-72 animate-pulse",
         className,
       )}
     >

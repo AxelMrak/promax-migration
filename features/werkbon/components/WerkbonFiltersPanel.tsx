@@ -1,4 +1,3 @@
-// features/werkbon/components/WerkbonFiltersPanel.tsx
 "use client";
 
 import { useMemo } from "react";
@@ -127,19 +126,9 @@ export function WerkbonFiltersPanel({
           </Select>
         </FilterField>
 
-        <div className="sm:col-span-2 lg:col-span-1">
-          <FilterField label="Date Range">
-            <DateRangeFilter
-              fromValue={activeFilters.created_at_after || ""}
-              toValue={activeFilters.created_at_before || ""}
-              onFromChange={(v) => updateFilter("created_at_after", v || "all")}
-              onToChange={(v) => updateFilter("created_at_before", v || "all")}
-            />
-          </FilterField>
-        </div>
-
         <FilterField label="Created by" icon={Users}>
           <MultiSelectFilter
+            isLoading={isLoading}
             options={userOptions}
             value={
               activeFilters.created_by
@@ -174,6 +163,17 @@ export function WerkbonFiltersPanel({
             emptyLabel="All product codes"
           />
         </FilterField>
+
+        <div className="sm:col-span-2 lg:col-span-1">
+          <FilterField label="Date Range">
+            <DateRangeFilter
+              fromValue={activeFilters.created_at_after || ""}
+              toValue={activeFilters.created_at_before || ""}
+              onFromChange={(v) => updateFilter("created_at_after", v || "all")}
+              onToChange={(v) => updateFilter("created_at_before", v || "all")}
+            />
+          </FilterField>
+        </div>
       </div>
 
       <div className="flex items-center justify-between flex-wrap gap-3">

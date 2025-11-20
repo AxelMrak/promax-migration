@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, ChevronDown, X } from "lucide-react";
+import { Check, ChevronDown, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import {
@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/Popover";
 import { Badge } from "@/components/ui/Badge";
 import { useDebounce } from "@/hooks/useDebounce";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 interface MultiSelectFilterProps {
   options: { value: string; label: string }[];
@@ -18,6 +19,7 @@ interface MultiSelectFilterProps {
   onChange: (value: string[]) => void;
   placeholder?: string;
   searchPlaceholder?: string;
+  isLoading?: boolean;
 }
 
 export function MultiSelectFilter({
@@ -26,6 +28,7 @@ export function MultiSelectFilter({
   onChange,
   placeholder = "Select options...",
   searchPlaceholder = "Search...",
+  isLoading = false,
 }: MultiSelectFilterProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -56,35 +59,49 @@ export function MultiSelectFilter({
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            className="w-full justify-between h-9 border-border"
+            className="w-full justify-between h-9 border-border text-muted-foreground"
           >
-            <div className="flex flex-wrap gap-1">
-              {selectedLabels.length === 0 ? (
-                <span className="text-muted-foreground">{placeholder}</span>
-              ) : selectedLabels.length <= 2 ? (
-                selectedLabels.map((label) => (
-                  <Badge key={label} variant="secondary" className="text-xs">
-                    {label}
-                  </Badge>
-                ))
-              ) : (
-                <Badge variant="secondary" className="text-xs">
-                  {selectedLabels.length} selected
-                </Badge>
-              )}
-            </div>
-            <ChevronDown className="h-4 w-4 opacity-50" />
+            {isLoading ? (
+              <Skeleton className="h-4 w-20" />
+            ) : (
+              <>
+                <div className="flex flex-wrap gap-1">
+                  {selectedLabels.length === 0 ? (
+                    <span className="text-muted-foreground">{placeholder}</span>
+                  ) : selectedLabels.length <= 2 ? (
+                    selectedLabels.map((label) => (
+                      <Badge
+                        key={label}
+                        variant="secondary"
+                        className="text-xs"
+                      >
+                        {label}
+                      </Badge>
+                    ))
+                  ) : (
+                    <Badge variant="secondary" className="text-xs">
+                      {selectedLabels.length} selected
+                    </Badge>
+                  )}
+                </div>
+                <ChevronDown className="h-4 w-4 opacity-50" />
+              </>
+            )}
           </Button>
         </PopoverTrigger>
 
         <PopoverContent className="w-80 p-0" align="start">
           <div className="p-3 border-b border-border">
-            <Input
-              placeholder={searchPlaceholder}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-8 border-border"
-            />
+            <div className="relative">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={searchPlaceholder}
+                className="w-full pl-10 pr-8 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary h-9 text-sm"
+              />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            </div>
           </div>
 
           <div className="max-h-60 overflow-y-auto">
@@ -132,4 +149,3 @@ export function MultiSelectFilter({
     </div>
   );
 }
-
