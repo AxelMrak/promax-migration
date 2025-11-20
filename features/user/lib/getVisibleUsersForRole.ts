@@ -11,6 +11,7 @@ export function getVisibleUsersForRole(
     case UserLevel.ADMIN:
       return allUsers;
 
+    // TODO: TALK WITH HENKY ABOUT THIS LOGIC. MANAGERS SHOULDN'T SEE ADMINS?
     case UserLevel.MANAGER:
       return allUsers.filter((user) => {
         if (user.user_level === UserLevel.ADMIN) return false;
