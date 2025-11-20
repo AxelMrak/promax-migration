@@ -1,115 +1,96 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { z } from "zod";
-import type { WerkbonFilters } from "../types";
+import { useState, useCallback, useMemo } from "react";
+import {
+  WerkbonFiltersSchema,
+  type WerkbonFilters,
+} from "@/features/werkbon/schema";
 
-const WerkbonFiltersSchema = z.object({
-  is_invoiced: z.boolean().optional(),
-  created_by: z.array(z.number()).optional(),
-  created_at_after: z.string().optional(),
-  created_at_before: z.string().optional(),
-  exact_product_code: z.string().optional(),
-  license_plate: z.string().optional(),
-  search: z.string().optional(),
-});
+type ActiveFilters = Record<string, string>;
+
+const EMPTY_API_FILTERS: WerkbonFilters = {};
+const EMPTY_ACTIVE: ActiveFilters = {};
+const ALL = "all";
 
 export function useWerkbonFilters() {
-  const [filters, setFilters] = useState<WerkbonFilters>({});
-  const [activeFilters, setActiveFilters] = useState<Record<string, string>>(
-    {},
-  );
+  const [filters, setFilters] = useState<WerkbonFilters>(EMPTY_API_FILTERS);
+  const [activeFilters, setActiveFilters] =
+    useState<ActiveFilters>(EMPTY_ACTIVE);
 
-  const convertToApi = useCallback(
-    (activeFilters: Record<string, string>): WerkbonFilters => {
-      const apiFilters: WerkbonFilters = {};
+  const convertToApi = useCallback((active: ActiveFilters): WerkbonFilters => {
+    const api: WerkbonFilters = {};
 
-      // Invoice status
-      if (activeFilters.is_invoiced && activeFilters.is_invoiced !== "all") {
-        apiFilters.is_invoiced = activeFilters.is_invoiced === "true";
+    // Invoice status
+    if (active.is_invoiced && active.is_invoiced !== ALL) {
+      api.is_invoiced = active.is_invoiced === "true";
+    }
+
+    // Dates
+    if (active.created_at_after && active.created_at_after !== ALL) {
+      api.created_at_after = active.created_at_after;
+    }
+    if (active.created_at_before && active.created_at_before !== ALL) {
+      api.created_at_before = active.created_at_before;
+    }
+
+    // License plate
+    if (active.license_plate && active.license_plate !== ALL) {
+      api.license_plate = active.license_plate;
+    }
+
+    // Product code
+    if (active.exact_product_code && active.exact_product_code !== ALL) {
+      api.exact_product_code = active.exact_product_code;
+    }
+
+    // User IDs (comma-separated string → number[])
+    if (active.created_by && active.created_by !== ALL) {
+      const userIds = active.created_by
+        .split(",")
+        .map((id) => parseInt(id.trim(), 10))
+        .filter((id) => !Number.isNaN(id));
+
+      if (userIds.length > 0) {
+        api.created_by = userIds;
       }
+    }
 
-      // Date filters
-      if (
-        activeFilters.created_at_after &&
-        activeFilters.created_at_after !== "all"
-      ) {
-        apiFilters.created_at_after = activeFilters.created_at_after;
-      }
+    // Search
+    if (active.search && active.search !== ALL && active.search.trim()) {
+      api.search = active.search.trim();
+    }
 
-      if (
-        activeFilters.created_at_before &&
-        activeFilters.created_at_before !== "all"
-      ) {
-        apiFilters.created_at_before = activeFilters.created_at_before;
-      }
-
-      // License plate
-      if (
-        activeFilters.license_plate &&
-        activeFilters.license_plate !== "all"
-      ) {
-        apiFilters.license_plate = activeFilters.license_plate;
-      }
-
-      // Product code
-      if (
-        activeFilters.exact_product_code &&
-        activeFilters.exact_product_code !== "all"
-      ) {
-        apiFilters.exact_product_code = activeFilters.exact_product_code;
-      }
-
-      // User IDs
-      if (activeFilters.created_by && activeFilters.created_by !== "all") {
-        const userIds = activeFilters.created_by
-          .split(",")
-          .map((id) => parseInt(id.trim()))
-          .filter((id) => !isNaN(id));
-        if (userIds.length > 0) {
-          apiFilters.created_by = userIds;
-        }
-      }
-
-      // Search
-      if (
-        activeFilters.search &&
-        activeFilters.search !== "all" &&
-        activeFilters.search.trim()
-      ) {
-        apiFilters.search = activeFilters.search.trim();
-      }
-
-      return apiFilters;
-    },
-    [],
-  );
+    return api;
+  }, []);
 
   const updateFilter = useCallback(
     (key: string, value: string) => {
       setActiveFilters((prev) => {
-        const newFilters = { ...prev, [key]: value };
-        const apiFilters = convertToApi(newFilters);
+        const nextActive = { ...prev, [key]: value };
+        const apiFilters = convertToApi(nextActive);
 
-        // Validate with Zod
         const result = WerkbonFiltersSchema.safeParse(apiFilters);
         if (result.success) {
           setFilters(result.data);
         }
 
-        return newFilters;
+        return nextActive;
       });
     },
     [convertToApi],
   );
 
   const reset = useCallback(() => {
-    setActiveFilters({});
-    setFilters({});
+    setActiveFilters(EMPTY_ACTIVE);
+    setFilters(EMPTY_API_FILTERS);
   }, []);
 
-  const hasActiveFilters = Object.values(activeFilters).some(
-    (value) => value && value !== "all" && value.trim() !== "",
+  const hasActiveFilters = useMemo(
+    () =>
+      Object.values(activeFilters).some(
+        (value) => value && value !== ALL && value.trim() !== "",
+      ),
+    [activeFilters],
   );
 
   return {
@@ -121,4 +102,3 @@ export function useWerkbonFilters() {
     toDto: () => filters,
   };
 }
-
