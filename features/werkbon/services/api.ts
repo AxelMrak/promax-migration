@@ -13,7 +13,7 @@ export async function fetchWerkbonList(filters: WerkbonFilters = {}) {
     params.set("is_invoiced", String(filters.is_invoiced));
   }
   if (filters.created_by?.length) {
-    params.set("created_by", filters.created_by.join(','));
+    params.set("created_by", filters.created_by.join(","));
   }
   if (filters.created_at_after) {
     params.set("created_at_after", filters.created_at_after);
@@ -60,4 +60,17 @@ export async function deleteWerkbon(id: number) {
 
 export async function fetchWerkbonStats() {
   return authApi<WerkbonStats>("/werkbon/stats/");
+}
+
+export async function fetchWerkbonPDF(id: number) {
+  return authApi<Blob>(`/werkbon/${id}/generate-pdf/`, {
+    method: "GET",
+  });
+}
+
+export async function updateWerkbonExactCode(id: number, exactCodeId: number) {
+  return authApi<Werkbon>(`/werkbon/${id}/update-exact-code/`, {
+    method: "POST",
+    body: { exact_product_code: exactCodeId },
+  });
 }

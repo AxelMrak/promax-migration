@@ -89,7 +89,7 @@ function DropdownMenuContent({
   align = "start",
   children,
   ...props
-}: React.HTMLAttributes<HTMLDivElement> & { 
+}: React.HTMLAttributes<HTMLDivElement> & {
   sideOffset?: number;
   align?: "start" | "center" | "end";
 }) {
@@ -100,17 +100,21 @@ function DropdownMenuContent({
 
   if (!open) return null;
 
-  const alignmentClass = align === "end" ? "right-0" : align === "center" ? "left-1/2 -translate-x-1/2" : "left-0";
+  const alignmentClass =
+    align === "end"
+      ? "right-0"
+      : align === "center"
+        ? "left-1/2 -translate-x-1/2"
+        : "left-0";
 
   return (
     <div
       ref={ref}
       data-state={open ? "open" : "closed"}
       className={cn(
-        "bg-popover text-popover-foreground animate-in fade-in-0 zoom-in-95 z-50 min-w-[8rem] overflow-hidden rounded-md border p-1 shadow-md",
-        "absolute top-[calc(100%+4px)] w-max", // Positioning replacement
+        "bg-popover text-popover-foreground animate-in fade-in-0 zoom-in-95 z-50 min-w-[8rem] overflow-hidden rounded-md border border-border p-1 shadow-md",
+        "absolute top-[calc(100%+4px)] w-max",
         alignmentClass,
-        // Prevent overflow on mobile
         "max-w-[calc(100vw-2rem)]",
         className,
       )}
@@ -143,7 +147,7 @@ function DropdownMenuItem({
     <div
       role="menuitem"
       className={cn(
-        "focus:bg-accent focus:text-accent-foreground relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "focus:bg-accent focus:text-accent-foreground relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none  data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:opacity-80 transition-all",
         inset && "pl-8",
         variant === "destructive" &&
           "text-destructive focus:bg-destructive/10 focus:text-destructive hover:bg-destructive/10 hover:text-destructive",
@@ -328,7 +332,7 @@ function DropdownMenuSubContent({
   return (
     <div
       className={cn(
-        "bg-popover text-popover-foreground animate-in fade-in-0 zoom-in-95 shadow-lg absolute left-full top-0 z-50 hidden min-w-[8rem] overflow-hidden rounded-md border p-1 group-hover/sub:block",
+        "bg-popover text-popover-foreground animate-in fade-in-0 zoom-in-95 shadow-lg absolute left-full top-0 z-50 hidden min-w-[8rem] overflow-hidden rounded-md border border-border p-1 group-hover/sub:block",
         className,
       )}
       {...props}
