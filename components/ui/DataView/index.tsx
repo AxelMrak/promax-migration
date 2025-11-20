@@ -22,6 +22,7 @@ interface DataViewProps<T> {
   isLoading?: boolean;
 }
 
+//TODO: THIS SHOULD BE A FEATURE ON /FEATURES/DATAVIEW with logic and components associated
 export function DataView<T extends { id: string | number }>({
   data,
   columns,
