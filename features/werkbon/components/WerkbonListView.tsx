@@ -13,6 +13,9 @@ export function WerkbonListView() {
 
   const { data, isLoading } = useWerkbonList(filters);
 
+  // TODO: Implement navigation, deletion, and sharing logic
+  // TODO: FIX SORT logic in useWerkbonList when clicking on column headers (Title works, but another columns do not)
+
   const handleRowClick = (werkbon: Werkbon) => {
     console.log("Navigate to werkbon:", werkbon.id);
   };
