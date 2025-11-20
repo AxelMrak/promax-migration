@@ -3,59 +3,125 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Promax | Offline</title>
+    <title>ProMax APP | Offline</title>
     <style>
       :root {
-        color-scheme: light;
-        --bg: #0f172a;
-        --card: #111827;
-        --muted: #cbd5e1;
         --primary: #f07f1c;
+        --primary-hover: #d66e15;
+        --text-main: #111827;
+        --text-muted: #6b7280;
+        --bg: #ffffff;
       }
+
+      * {
+        box-sizing: border-box;
+      }
+
       body {
         margin: 0;
-        font-family: Inter, system-ui, -apple-system, sans-serif;
+        font-family:
+          "Helvetica Neue",
+          Helvetica,
+          Arial,
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text-main);
         min-height: 100vh;
-        display: grid;
-        place-items: center;
-        background: radial-gradient(circle at 20% 20%, #1f2937 0, #0f172a 45%),
-          radial-gradient(circle at 80% 0%, #1f2937 0, #0f172a 40%),
-          var(--bg);
-        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        -webkit-font-smoothing: antialiased;
       }
-      .card {
-        background: var(--card);
-        padding: 1.5rem;
-        border-radius: 18px;
-        border: 1px solid #1f2937;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-        max-width: 360px;
+
+      .container {
+        width: 100%;
+        max-width: 420px;
         text-align: center;
+        padding: 2rem;
       }
-      h1 {
-        margin: 0 0 0.5rem;
-        font-size: 1.6rem;
-      }
-      p {
-        margin: 0 0 1.25rem;
-        color: var(--muted);
-      }
-      .btn {
+
+      .logo {
+        height: 40px;
+        width: auto;
+        margin-bottom: 2rem;
         display: inline-block;
-        padding: 0.75rem 1.2rem;
-        border-radius: 12px;
-        background: linear-gradient(120deg, #f07f1c, #f6b56b);
-        color: #0b0f1a;
+      }
+
+      h1 {
+        margin: 0 0 1rem;
+        font-size: 1.5rem;
         font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--text-main);
+      }
+
+      p {
+        margin: 0 0 2rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+        font-size: 1rem;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        background-color: var(--primary);
+        color: white;
+        font-weight: 600;
         text-decoration: none;
+        transition:
+          background-color 0.2s ease,
+          transform 0.1s ease;
+        font-size: 0.95rem;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(240, 127, 28, 0.2);
+      }
+
+      .btn:hover {
+        background-color: var(--primary-hover);
+      }
+
+      .btn:active {
+        transform: translateY(1px);
+      }
+
+      .offline-icon {
+        color: var(--text-muted);
+        margin-bottom: 1rem;
+        opacity: 0.5;
       }
     </style>
   </head>
   <body>
-    <main class="card">
-      <h1>Offline mode</h1>
-      <p>You are offline. Recent pages may still be available. Reconnect to sync.</p>
-      <a class="btn" href="/">Try again</a>
+    <main class="container">
+      <img
+        src="/logo/promax.svg"
+        alt="Promax Logo"
+        class="logo"
+        onerror="this.style.display='none'"
+      />
+
+      <div class="content">
+        <h1>No internet connection</h1>
+        <p>
+          It seems you are offline. Please check your connection and try again
+          to access the latest data.
+        </p>
+        <a
+          class="btn"
+          href="/"
+          onclick="window.location.reload(); return false;"
+        >
+          Try Again
+        </a>
+      </div>
     </main>
   </body>
 </html>
