@@ -16,67 +16,93 @@ const WerkbonFiltersSchema = z.object({
 
 export function useWerkbonFilters() {
   const [filters, setFilters] = useState<WerkbonFilters>({});
-  const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
+  const [activeFilters, setActiveFilters] = useState<Record<string, string>>(
+    {},
+  );
 
-  const convertToApi = useCallback((activeFilters: Record<string, string>): WerkbonFilters => {
-    const apiFilters: WerkbonFilters = {};
+  const convertToApi = useCallback(
+    (activeFilters: Record<string, string>): WerkbonFilters => {
+      const apiFilters: WerkbonFilters = {};
 
-    // Invoice status
-    if (activeFilters.is_invoiced && activeFilters.is_invoiced !== "all") {
-      apiFilters.is_invoiced = activeFilters.is_invoiced === "true";
-    }
-
-    // Date filters
-    if (activeFilters.created_at_after && activeFilters.created_at_after !== "all") {
-      apiFilters.created_at_after = activeFilters.created_at_after;
-    }
-    
-    if (activeFilters.created_at_before && activeFilters.created_at_before !== "all") {
-      apiFilters.created_at_before = activeFilters.created_at_before;
-    }
-
-    // License plate
-    if (activeFilters.license_plate && activeFilters.license_plate !== "all") {
-      apiFilters.license_plate = activeFilters.license_plate;
-    }
-
-    // Product code
-    if (activeFilters.exact_product_code && activeFilters.exact_product_code !== "all") {
-      apiFilters.exact_product_code = activeFilters.exact_product_code;
-    }
-
-    // User IDs
-    if (activeFilters.created_by && activeFilters.created_by !== "all") {
-      const userIds = activeFilters.created_by.split(',')
-        .map(id => parseInt(id.trim()))
-        .filter(id => !isNaN(id));
-      if (userIds.length > 0) {
-        apiFilters.created_by = userIds;
+      // Invoice status
+      if (activeFilters.is_invoiced && activeFilters.is_invoiced !== "all") {
+        apiFilters.is_invoiced = activeFilters.is_invoiced === "true";
       }
-    }
 
-    // Search
-    if (activeFilters.search && activeFilters.search !== "all" && activeFilters.search.trim()) {
-      apiFilters.search = activeFilters.search.trim();
-    }
-
-    return apiFilters;
-  }, []);
-
-  const updateFilter = useCallback((key: string, value: string) => {
-    setActiveFilters(prev => {
-      const newFilters = { ...prev, [key]: value };
-      const apiFilters = convertToApi(newFilters);
-      
-      // Validate with Zod
-      const result = WerkbonFiltersSchema.safeParse(apiFilters);
-      if (result.success) {
-        setFilters(result.data);
+      // Date filters
+      if (
+        activeFilters.created_at_after &&
+        activeFilters.created_at_after !== "all"
+      ) {
+        apiFilters.created_at_after = activeFilters.created_at_after;
       }
-      
-      return newFilters;
-    });
-  }, [convertToApi]);
+
+      if (
+        activeFilters.created_at_before &&
+        activeFilters.created_at_before !== "all"
+      ) {
+        apiFilters.created_at_before = activeFilters.created_at_before;
+      }
+
+      // License plate
+      if (
+        activeFilters.license_plate &&
+        activeFilters.license_plate !== "all"
+      ) {
+        apiFilters.license_plate = activeFilters.license_plate;
+      }
+
+      // Product code
+      if (
+        activeFilters.exact_product_code &&
+        activeFilters.exact_product_code !== "all"
+      ) {
+        apiFilters.exact_product_code = activeFilters.exact_product_code;
+      }
+
+      // User IDs
+      if (activeFilters.created_by && activeFilters.created_by !== "all") {
+        const userIds = activeFilters.created_by
+          .split(",")
+          .map((id) => parseInt(id.trim()))
+          .filter((id) => !isNaN(id));
+        if (userIds.length > 0) {
+          apiFilters.created_by = userIds;
+        }
+      }
+
+      // Search
+      // TODO: ACTUALLY I THINK THE BACKEND IGNORES THIS ONE FOR WERKBONS? Maybe is better to use search on the frontend only
+      if (
+        activeFilters.search &&
+        activeFilters.search !== "all" &&
+        activeFilters.search.trim()
+      ) {
+        apiFilters.search = activeFilters.search.trim();
+      }
+
+      return apiFilters;
+    },
+    [],
+  );
+
+  const updateFilter = useCallback(
+    (key: string, value: string) => {
+      setActiveFilters((prev) => {
+        const newFilters = { ...prev, [key]: value };
+        const apiFilters = convertToApi(newFilters);
+
+        // Validate with Zod
+        const result = WerkbonFiltersSchema.safeParse(apiFilters);
+        if (result.success) {
+          setFilters(result.data);
+        }
+
+        return newFilters;
+      });
+    },
+    [convertToApi],
+  );
 
   const reset = useCallback(() => {
     setActiveFilters({});
@@ -84,7 +110,7 @@ export function useWerkbonFilters() {
   }, []);
 
   const hasActiveFilters = Object.values(activeFilters).some(
-    value => value && value !== "all" && value.trim() !== ""
+    (value) => value && value !== "all" && value.trim() !== "",
   );
 
   return {
@@ -96,3 +122,4 @@ export function useWerkbonFilters() {
     toDto: () => filters,
   };
 }
+
