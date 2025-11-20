@@ -138,7 +138,7 @@ export function WerkbonFiltersPanel({
           </FilterField>
         </div>
 
-        <FilterField label="Users" icon={Users}>
+        <FilterField label="Created by" icon={Users}>
           <MultiSelectFilter
             options={userOptions}
             value={
