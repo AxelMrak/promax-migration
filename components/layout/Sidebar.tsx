@@ -1,8 +1,8 @@
 import Image from "next/image";
 import GlobalSearch from "@/features/global-search/components/GlobalSearch";
 import { Navigation } from "@/features/navigation/component/Navigation";
-import AppDownloadsSection from "../sections/AppDownloadsSection";
-import { Separator } from "../ui/Separator";
+import AppDownloadsSection from "@/components/sections/AppDownloadsSection";
+import { Separator } from "@/components/ui/Separator";
 import UserCardSidebar from "@/features/user/components/UserCardSidebar";
 
 export function Sidebar() {

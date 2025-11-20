@@ -3,7 +3,7 @@
 import { useCurrentUser } from "@/features/user/hooks/useCurrentUser";
 import NavigationItem from "@/features/navigation/component/NavigationItem";
 import { getRoutesForRole } from "@/features/navigation/routes";
-import NavigationItemSkeleton from "./NavigationItemSkeleton";
+import NavigationItemSkeleton from "@/features/navigation/component/NavigationItemSkeleton";
 
 export function Navigation() {
   const { data: user, isLoading } = useCurrentUser();
