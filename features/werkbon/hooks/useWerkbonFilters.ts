@@ -72,7 +72,6 @@ export function useWerkbonFilters() {
       }
 
       // Search
-      // TODO: ACTUALLY I THINK THE BACKEND IGNORES THIS ONE FOR WERKBONS? Maybe is better to use search on the frontend only
       if (
         activeFilters.search &&
         activeFilters.search !== "all" &&

@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { Pagination } from "@/components/ui/Pagination";
 import { useDataView, type Column } from "@/hooks/useDataView";
-import DataViewHeader from "./DataViewHeader";
-import DataViewTable from "./DataViewTable";
-import DataViewGrid from "./DataViewGrid";
-import DataViewTableSkeleton from "./DataViewTableSkeleton";
-import DataViewGridSkeleton from "./DataViewGridSkeleton";
+import DataViewHeader from "@/components/ui/DataView/DataViewHeader";
+import DataViewTable from "@/components/ui/DataView/DataViewTable";
+import DataViewGrid from "@/components/ui/DataView/DataViewGrid";
+import DataViewTableSkeleton from "@/components/ui/DataView/DataViewTableSkeleton";
+import DataViewGridSkeleton from "@/components/ui/DataView/DataViewGridSkeleton";
+import { useResponsiveViewMode } from "@/hooks/useResponsiveViewMode";
 
 interface DataViewProps<T> {
   data: T[];
@@ -17,7 +18,6 @@ interface DataViewProps<T> {
   onRowClick?: (item: T) => void;
   onDelete?: (item: T) => void;
   onShare?: (item: T) => void;
-  emptyMessage?: string;
   pageSize?: number;
   isLoading?: boolean;
 }
@@ -29,40 +29,18 @@ export function DataView<T extends { id: string | number }>({
   onRowClick,
   onDelete,
   onShare,
-  emptyMessage = "No data found",
   pageSize = 10,
   isLoading = false,
 }: DataViewProps<T>) {
-  // Responsive default view mode
-  const getDefaultViewMode = () => {
-    if (typeof window !== "undefined") {
-      return window.innerWidth < 768 ? "grid" : "table";
-    }
-    return "table";
-  };
-
-  const [viewMode, setViewMode] = useState<"table" | "grid">(
-    getDefaultViewMode(),
-  );
+  const [viewMode, setViewMode] = useResponsiveViewMode();
   const [hiddenColumns, setHiddenColumns] = useState<Set<string>>(new Set());
-  const [isMobile, setIsMobile] = useState<boolean>(false);
 
-  // Update view mode and mobile detection on window resize
-  useEffect(() => {
-    const handleResize = () => {
-      const mobile = window.innerWidth < 640;
-      setIsMobile(mobile);
-    };
-
-    if (typeof window !== "undefined") {
-      handleResize(); // Initial check
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }
-  }, []); // Remove viewMode dependency
-
-  const visibleColumns = columns.filter(
-    (col) => col.key !== "id" && !hiddenColumns.has(String(col.key)),
+  const visibleColumns = useMemo(
+    () =>
+      columns.filter(
+        (col) => col.key !== "id" && !hiddenColumns.has(String(col.key)),
+      ),
+    [columns, hiddenColumns],
   );
 
   const toggleColumnVisibility = (columnKey: string) => {
@@ -88,7 +66,7 @@ export function DataView<T extends { id: string | number }>({
     handleSort,
   } = useDataView({
     data,
-    columns: columns.filter((col) => !hiddenColumns.has(String(col.key))),
+    columns: visibleColumns,
     pageSize,
     searchQuery,
   });
@@ -105,30 +83,18 @@ export function DataView<T extends { id: string | number }>({
   };
 
   const handleRowAction = (action: string, item: T) => {
-    console.log("handleRowAction called:", action, item);
     switch (action) {
       case "delete":
-        if (onDelete) {
-          onDelete(item);
-        } else {
-          console.log("Delete action:", item);
-        }
+        onDelete?.(item);
         break;
       case "share":
-        if (onShare) {
-          onShare(item);
-        } else {
-          console.log("Share action:", item);
-        }
+        onShare?.(item);
         break;
-      default:
-        console.log("Unknown action:", action);
     }
   };
 
   return (
     <div className="space-y-4">
-      {/* View Toggle and Column Selector */}
       <DataViewHeader
         isLoading={isLoading}
         viewMode={viewMode}
@@ -138,8 +104,8 @@ export function DataView<T extends { id: string | number }>({
         setHiddenColumns={setHiddenColumns}
         toggleColumnVisibility={toggleColumnVisibility}
       />
+
       {viewMode === "table" ? (
-        /* Table View */
         isLoading ? (
           <DataViewTableSkeleton
             visibleColumns={visibleColumns}
@@ -155,8 +121,7 @@ export function DataView<T extends { id: string | number }>({
             handleRowAction={handleRowAction}
           />
         )
-      ) : /* Grid View */
-      isLoading ? (
+      ) : isLoading ? (
         <DataViewGridSkeleton
           visibleColumns={visibleColumns}
           cardCount={pageSize}
@@ -169,7 +134,7 @@ export function DataView<T extends { id: string | number }>({
           handleRowAction={handleRowAction}
         />
       )}
-      {/* Pagination */}
+
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
