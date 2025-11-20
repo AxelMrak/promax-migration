@@ -83,16 +83,16 @@ export default function DataViewGrid<T extends { id: string | number }>({
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-            <div className="space-y-2 pt-3">
+            <div className="space-y-4 flex flex-row items-start gap-4">
               {visibleColumns.slice(1).map((column) => (
                 <div
                   key={String(column.key)}
-                  className="grid grid-cols-3 gap-2 text-sm"
+                  className="flex flex-col gap-1 text-xs"
                 >
-                  <span className="text-muted-foreground">
+                  <span className="text-muted-foreground whitespace-nowrap">
                     {column.header}:
                   </span>
-                  <div className="col-span-2">
+                  <div className="font-medium">
                     {column.render
                       ? column.render(item)
                       : String(item[column.key])}

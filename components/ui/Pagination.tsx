@@ -22,19 +22,19 @@ export function Pagination({
     const delta = 2;
     const start = Math.max(1, currentPage - delta);
     const end = Math.min(totalPages, currentPage + delta);
-    
+
     const pages = [];
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
-    
+
     return pages;
   };
 
   const visiblePages = getVisiblePages();
 
   return (
-    <div className="flex items-center justify-between border-t border-border pt-4">
+    <div className="flex items-center justify-between border-t border-border pt-4 flex-wrap gap-4 w-full">
       {totalItems && (
         <div className="text-sm text-muted-foreground">
           Showing {(currentPage - 1) * 10 + 1} to{" "}
@@ -72,7 +72,7 @@ export function Pagination({
         {visiblePages.map((page) => (
           <Button
             key={page}
-            variant={currentPage === page ? "default" : "outline"}
+            variant={currentPage === page ? "primary" : "outline"}
             size="sm"
             onClick={() => onPageChange(page)}
             className="h-8 w-8 p-0"
@@ -110,3 +110,4 @@ export function Pagination({
     </div>
   );
 }
+
