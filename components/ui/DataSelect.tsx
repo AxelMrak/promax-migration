@@ -28,11 +28,11 @@ function DataSelectSkeleton({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "h-9 rounded-md border border-input bg-background",
+        "h-9 rounded-md border border-input bg-background min-w-60 animate-pulse",
         className,
       )}
     >
-      <div className="flex items-center h-full px-3 gap-2">
+      <div className="flex items-center h-full px-3 gap-2 min-w-20 animate-pulse justify-between">
         <Skeleton className="h-4 flex-1 max-w-[60%]" />
         <Skeleton className="h-3 w-3" />
       </div>

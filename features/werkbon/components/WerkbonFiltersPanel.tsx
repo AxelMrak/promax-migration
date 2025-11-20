@@ -59,15 +59,6 @@ export function WerkbonFiltersPanel({
     (s) => s.value === currentStatusValue,
   );
 
-  const searchableFields = useMemo(
-    () =>
-      columns
-        .filter((col) => col.searchable !== false)
-        .map((col) => col.header.toLowerCase())
-        .join(", "),
-    [columns],
-  );
-
   const licensePlateOptions =
     baseData?.trucks.map((truck) => ({
       value: truck.license_plate,
@@ -96,7 +87,7 @@ export function WerkbonFiltersPanel({
             <SearchBar
               value={activeFilters.search || ""}
               onChange={(value) => updateFilter("search", value)}
-              placeholder={`Search ${searchableFields}...`}
+              placeholder="Search werkbons..."
             />
           </FilterField>
         </div>
