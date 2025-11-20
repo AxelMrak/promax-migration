@@ -45,7 +45,6 @@ const MOCK_USERS = [
 ];
 
 export function WerkbonFiltersPanel({
-  columns,
   activeFilters,
   updateFilter,
   reset,
