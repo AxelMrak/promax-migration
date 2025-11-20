@@ -6,9 +6,17 @@ import { useCurrentUser } from "@/features/user/hooks/useCurrentUser";
 import { useDockItems } from "@/features/navigation/hooks/useDockItems";
 import { isRouteActive } from "@/features/navigation/utils";
 import MenuDockSkeleton from "@/components/layout/MenuDock/MenuDockSkeleton";
-import MenuDockActionBtn from "./MenuDockActionBtn";
-import MenuDockProfileBtn from "./MenuDockProfileBtn";
-import MenuDockItemButton from "./MenuDockItemButton";
+import MenuDockActionBtn from "@/components/layout/MenuDock/MenuDockActionBtn";
+import MenuDockProfileBtn from "@/components/layout/MenuDock/MenuDockProfileBtn";
+import MenuDockItemButton from "@/components/layout/MenuDock/MenuDockItemButton";
+
+export interface MenuDockItem {
+  label: string;
+  icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  href?: string;
+  isProfile?: boolean;
+  isAction?: boolean;
+}
 
 export function MenuDock() {
   const pathname = usePathname();

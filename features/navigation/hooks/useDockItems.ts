@@ -1,7 +1,7 @@
 import { Home, Plus } from "lucide-react";
 import type { MenuDockItem } from "@/components/layout/MenuDock";
-import type { User } from "@/types";
 import { getRoutesForRole } from "@/features/navigation/routes";
+import { User } from "@/features/user/types";
 
 export function useDockItems(user?: User): MenuDockItem[] {
   if (!user) return [];
