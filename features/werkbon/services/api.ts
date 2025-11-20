@@ -13,7 +13,7 @@ export async function fetchWerkbonList(filters: WerkbonFilters = {}) {
     params.set("is_invoiced", String(filters.is_invoiced));
   }
   if (filters.created_by?.length) {
-    filters.created_by.forEach((id) => params.append("created_by", String(id)));
+    params.set("created_by", filters.created_by.join(','));
   }
   if (filters.created_at_after) {
     params.set("created_at_after", filters.created_at_after);
@@ -22,10 +22,13 @@ export async function fetchWerkbonList(filters: WerkbonFilters = {}) {
     params.set("created_at_before", filters.created_at_before);
   }
   if (filters.exact_product_code) {
-    params.set("exact_product_code", filters.exact_product_code);
+    params.set("exact_code", filters.exact_product_code);
   }
   if (filters.license_plate) {
     params.set("license_plate", filters.license_plate);
+  }
+  if (filters.search) {
+    params.set("search", filters.search);
   }
 
   return authApi<Werkbon[]>(`/werkbon/?${params.toString()}`);

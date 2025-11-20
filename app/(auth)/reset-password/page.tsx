@@ -23,7 +23,7 @@ export default async function ResetPasswordPage({
           className="-z-10 object-cover dark:brightness-75"
           priority
         />
-        <Card className="w-full max-w-xs space-y-4 border-border/30 bg-background/90 backdrop-blur-xs md:max-w-md">
+        <Card className="w-full max-w-xs space-y-4 border-border bg-background/90 backdrop-blur-xs md:max-w-md">
           <CardHeader className="flex flex-col items-center space-y-2">
             <Image
               src="/logo/promax.svg"
@@ -51,7 +51,7 @@ export default async function ResetPasswordPage({
         className="-z-10 object-cover dark:brightness-75"
         priority
       />
-      <Card className="w-full max-w-xs space-y-4 border-border/30 bg-background/90 backdrop-blur-xs md:max-w-md">
+      <Card className="w-full max-w-xs space-y-4 border-border bg-background/90 backdrop-blur-xs md:max-w-md">
         <CardHeader className="flex flex-col items-center space-y-2">
           <Image
             src="/logo/promax.svg"

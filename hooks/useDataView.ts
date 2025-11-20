@@ -1,80 +1,134 @@
+"use client";
+
 import { useState, useMemo, useEffect } from "react";
 
-export interface FilterConfig {
-  key: string;
-  label: string;
-  options: { label: string; value: string }[];
+export interface Column<T> {
+  key: keyof T;
+  header: string;
+  sortable?: boolean;
+  searchable?: boolean;
+  render?: (item: T) => React.ReactNode;
+  className?: string;
 }
 
-interface UseDataViewProps<T> {
+export interface UseDataViewProps<T> {
   data: T[];
-  filters?: FilterConfig[];
-  searchKeys?: (keyof T)[];
+  columns: Column<T>[];
   pageSize?: number;
+  searchQuery?: string;
+  filters?: Record<string, any>;
 }
 
 export function useDataView<T>({
   data,
-  filters = [],
-  searchKeys = [],
-  pageSize = 5,
+  columns,
+  pageSize = 10,
+  searchQuery = "",
+  filters = {},
 }: UseDataViewProps<T>) {
-  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [activeFilters, setActiveFilters] = useState<Record<string, string>>(
-    {},
-  );
+  const [sortKey, setSortKey] = useState<keyof T | null>(null);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
-  // Filter and Search Logic
+  // Filter and search data
   const filteredData = useMemo(() => {
-    return data.filter((item) => {
-      // 1. Match Search Query
-      const matchesSearch =
-        searchKeys.length === 0 || searchQuery === ""
-          ? true
-          : searchKeys.some((key) => {
-              const val = item[key];
-              return String(val)
-                .toLowerCase()
-                .includes(searchQuery.toLowerCase());
-            });
+    let result = [...data];
 
-      // 2. Match Dynamic Filters
-      const matchesFilters = filters.every((filter) => {
-        const activeValue = activeFilters[filter.key];
-        if (!activeValue || activeValue === "all") return true;
-        return String(item[filter.key]) === activeValue;
-      });
+    // Apply search
+    if (searchQuery.trim()) {
+      const searchableColumns = columns
+        .filter((col) => col.searchable !== false)
+        .map((col) => col.key);
 
-      return matchesSearch && matchesFilters;
+      result = result.filter((item) =>
+        searchableColumns.some((key) => {
+          const value = item[key];
+          return String(value)
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase());
+        }),
+      );
+    }
+
+    // Apply filters
+    Object.entries(filters).forEach(([key, value]) => {
+      if (
+        value !== undefined &&
+        value !== null &&
+        value !== "all" &&
+        value !== ""
+      ) {
+        result = result.filter((item) => {
+          const itemValue = item[key as keyof T];
+
+          if (Array.isArray(value)) {
+            return value.includes(itemValue);
+          }
+
+          if (typeof value === "boolean") {
+            return itemValue === value;
+          }
+
+          if (typeof value === "string" && value.includes(",")) {
+            const values = value.split(",").map((v) => v.trim());
+            return values.includes(String(itemValue));
+          }
+
+          return String(itemValue)
+            .toLowerCase()
+            .includes(String(value).toLowerCase());
+        });
+      }
     });
-  }, [data, searchQuery, activeFilters, searchKeys, filters]);
 
-  // Pagination Logic
-  const totalPages = Math.ceil(filteredData.length / pageSize);
+    return result;
+  }, [data, searchQuery, filters, columns]);
+
+  // Sort data
+  const sortedData = useMemo(() => {
+    if (!sortKey) return filteredData;
+
+    return [...filteredData].sort((a, b) => {
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+
+      if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [filteredData, sortKey, sortOrder]);
+
+  // Paginate data
   const paginatedData = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
-    return filteredData.slice(start, start + pageSize);
-  }, [filteredData, currentPage, pageSize]);
+    return sortedData.slice(start, start + pageSize);
+  }, [sortedData, currentPage, pageSize]);
 
-  // Reset page on filter change
+  // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, activeFilters]);
+  }, [searchQuery, filters]);
 
-  const handleFilterChange = (key: string, value: string) => {
-    setActiveFilters((prev) => ({ ...prev, [key]: value }));
+  const totalPages = Math.ceil(sortedData.length / pageSize);
+
+  const handleSort = (key: keyof T) => {
+    if (sortKey === key) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortKey(key);
+      setSortOrder("asc");
+    }
   };
 
   return {
-    searchQuery,
-    setSearchQuery,
-    activeFilters,
-    handleFilterChange,
+    data: paginatedData,
+    totalItems: sortedData.length,
+    totalPages,
     currentPage,
     setCurrentPage,
-    paginatedData,
-    totalPages,
-    totalItems: filteredData.length,
+    sortKey,
+    sortOrder,
+    handleSort,
   };
 }
+

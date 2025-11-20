@@ -28,7 +28,7 @@ export function ThemeSwitcher() {
       size="sm"
       aria-label="Toggle theme"
       aria-pressed={activeTheme === "dark"}
-      className="theme-switcher-button fixed bottom-2 right-2 z-50 h-8 w-8 rounded-full border border-border/40 bg-card/90 p-0 text-base shadow-lg backdrop-blur transition-transform duration-300 hover:scale-105 md:bottom-4 md:right-4 cursor-pointer hidden md:flex"
+      className="theme-switcher-button fixed bottom-2 right-2 z-50 h-8 w-8 rounded-full border border-border bg-card/90 p-0 text-base shadow-lg backdrop-blur transition-transform duration-300 hover:scale-105 md:bottom-4 md:right-4 cursor-pointer hidden md:flex"
       onClick={handleChangeTheme}
     >
       {activeTheme === "light" ? (

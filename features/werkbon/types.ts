@@ -26,14 +26,15 @@ export type WerkbonListResponse = {
   truck: Truck | null;
 };
 
-export interface WerkbonFilters {
+export type WerkbonFilters = {
   is_invoiced?: boolean;
   created_by?: number[];
   created_at_after?: string;
   created_at_before?: string;
   exact_product_code?: string;
   license_plate?: string;
-}
+  search?: string;
+};
 
 export interface WerkbonStats {
   total_count: number;

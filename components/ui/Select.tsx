@@ -139,7 +139,7 @@ function SelectContent({
     <div
       ref={ref}
       className={cn(
-        "bg-popover text-popover-foreground relative z-50 min-w-[8rem] overflow-hidden rounded-md border shadow-md animate-in fade-in-80 zoom-in-95",
+        "bg-popover text-popover-foreground relative z-50 min-w-[8rem] overflow-hidden rounded-md border border-border shadow-md animate-in fade-in-80 zoom-in-95",
         "absolute top-[calc(100%+4px)] left-0 w-full",
         className,
       )}
