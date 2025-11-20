@@ -12,6 +12,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import CreateWerkbonForm from "@/features/werkbon/components/CreateWerkbonForm";
 import { useCreateWerkbon } from "@/features/werkbon/hooks/useCreateWerkbon";
 import { toast } from "react-hot-toast";
+import { getErrorMessage } from "@/lib/api/error";
 
 export default function CreateWerkbonDialog({ isOpen }: { isOpen: boolean }) {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function CreateWerkbonDialog({ isOpen }: { isOpen: boolean }) {
         router.replace(`/${result.id}`);
         return `Werkbon #${result.id} succesvol aangemaakt`;
       },
-      error: (err) => (err instanceof Error ? err.message : "Aanmaken mislukt"),
+      error: (err) => getErrorMessage(err),
     });
   }
 
