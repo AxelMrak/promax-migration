@@ -6,6 +6,7 @@ interface ResetPasswordPageProps {
   searchParams: Promise<{ token?: string }>;
 }
 
+// TODO: ERRORS HERE NOT HANDLED VERY WELL. DOES NOT SHOW ANY MESSAGE on production build
 export default async function ResetPasswordPage({
   searchParams,
 }: ResetPasswordPageProps) {
@@ -33,7 +34,8 @@ export default async function ResetPasswordPage({
             />
             <CardTitle className="text-center text-2xl">Fout</CardTitle>
             <p className="text-md text-muted-foreground text-center">
-              Ongeldig reset token. Vraag alstublieft een nieuwe herstellink aan.
+              Ongeldig reset token. Vraag alstublieft een nieuwe herstellink
+              aan.
             </p>
           </CardHeader>
         </Card>
@@ -59,7 +61,9 @@ export default async function ResetPasswordPage({
             width={150}
             height={150}
           />
-          <CardTitle className="text-center text-2xl">Wachtwoord herstellen</CardTitle>
+          <CardTitle className="text-center text-2xl">
+            Wachtwoord herstellen
+          </CardTitle>
           <p className="text-md text-muted-foreground text-center">
             Voer uw nieuwe wachtwoord in
           </p>

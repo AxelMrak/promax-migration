@@ -10,6 +10,7 @@ import { useDeleteWerkbon } from "@/features/werkbon/hooks/useDeleteWerkbon";
 import { toast } from "react-hot-toast";
 import { useShare } from "@/hooks/useShare";
 import { useRouter } from "next/navigation";
+import { getErrorMessage } from "@/lib/api/error";
 
 export function WerkbonListView() {
   const { filters, activeFilters, updateFilter, reset, hasActiveFilters } =
@@ -28,7 +29,7 @@ export function WerkbonListView() {
     await toast.promise(deleteMutation.mutateAsync(werkbon.id), {
       loading: "Deleting werkbon...",
       success: "Werkbon deleted",
-      error: "Failed to delete werkbon",
+      error: (err) => getErrorMessage(err) || "Failed to delete werkbon",
     });
   };
 
