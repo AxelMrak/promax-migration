@@ -28,6 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
       apple: "/meta/promax/apple-touch-icon.png",
     },
     manifest: "/meta/promax/site.webmanifest",
+    themeColor: "#f07f1c",
   };
 }
 

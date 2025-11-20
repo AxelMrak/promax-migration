@@ -16,7 +16,6 @@ import {
   WerkbonFormSchemaDef,
   type WerkbonFormSchema,
 } from "@/features/werkbon/schema";
-import { useRouter } from "next/navigation";
 
 interface WerkbonnenFormProps {
   onSubmit?: (data: FormData) => void | Promise<void>;
@@ -28,7 +27,6 @@ export default function CreateWerkbonForm({
   onCancel,
 }: WerkbonnenFormProps) {
   const [images, setImages] = useState<ImageItem[]>([]);
-  const router = useRouter();
   const {
     register,
     handleSubmit,
