@@ -13,9 +13,7 @@ export function useDockItems(user?: User): MenuDockItem[] {
   }));
 
   const profileItem: MenuDockItem = {
-    label: "Profiel",
-    icon: Home,
-    href: "/profile",
+    label: "Menu",
     isProfile: true,
   };
 

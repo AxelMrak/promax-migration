@@ -16,7 +16,7 @@ export default function MenuDockActionBtn({
       <button
         onClick={() => navigate(router, item.href)}
         className={cn(
-          "relative z-20 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform active:scale-95",
+          "relative z-20 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md transition-transform active:scale-95",
           isActive && "ring-2 ring-primary ring-offset-2",
         )}
         aria-label={item.label}

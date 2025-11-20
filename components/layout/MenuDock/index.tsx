@@ -26,8 +26,8 @@ export function MenuDock() {
   }
 
   return (
-    <div className="fixed bottom-3 left-1/2 z-50 -translate-x-1/2 md:hidden">
-      <nav className="relative flex h-14 w-[95vw] max-w-md items-center rounded-2xl border border-border/50 bg-background/90 px-1 shadow-2xl backdrop-blur-xl">
+    <div className="fixed bottom-0  z-50  md:hidden">
+      <nav className="relative flex h-18 w-screen max-w-md items-center rounded-xl border border-border/50 bg-background/90 px-1 shadow-2xl backdrop-blur-xl">
         {items.map((item, index) => {
           const isActive = index === activeIndex;
 
